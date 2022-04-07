@@ -7,6 +7,7 @@
     <version>0.0.1</version>
     <name>api-ktor</name>
     <description>api-ktor</description>
+
     <properties>
         <ktor_version>2.0.0-beta-1</ktor_version>
         <kotlin.code.style>official</kotlin.code.style>
@@ -15,7 +16,9 @@
         <project.build.sourceEncoding>UTF-8</project.build.sourceEncoding>
         <kotlin.compiler.incremental>true</kotlin.compiler.incremental>
         <main.class>fr.ziedelth.ApplicationKt</main.class>
+        <jar.name>ziedelth.fr-api</jar.name>
     </properties>
+
     <repositories>
         <repository>
             <id>ktor_eap</id>
@@ -28,6 +31,7 @@
             </snapshots>
         </repository>
     </repositories>
+
     <dependencies>
         <dependency>
             <groupId>io.ktor</groupId>
@@ -72,7 +76,9 @@
             <scope>test</scope>
         </dependency>
     </dependencies>
+
     <build>
+        <finalName>${jar.name}</finalName>
         <sourceDirectory>${project.basedir}/src/main/kotlin</sourceDirectory>
         <testSourceDirectory>${project.basedir}/src/test/kotlin</testSourceDirectory>
         <resources>
