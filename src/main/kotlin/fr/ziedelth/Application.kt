@@ -1,7 +1,6 @@
 package fr.ziedelth
 
-import fr.ziedelth.routes.messageAuthor
-import fr.ziedelth.routes.messageRoute
+import fr.ziedelth.routes.*
 import io.ktor.serialization.gson.*
 import io.ktor.server.application.*
 import io.ktor.server.engine.*
@@ -17,6 +16,12 @@ fun main() {
         }
 
         routing {
+            countryRoute()
+            platformRoute()
+            genreRoute()
+            episodeTypeRoute()
+            langTypeRoute()
+
             messageAuthor()
             messageRoute()
         }
