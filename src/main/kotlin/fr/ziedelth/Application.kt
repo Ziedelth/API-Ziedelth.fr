@@ -1,12 +1,11 @@
 package fr.ziedelth
 
 import fr.ziedelth.routes.messageRoute
-import io.ktor.server.engine.*
-import io.ktor.server.netty.*
 import io.ktor.serialization.gson.*
 import io.ktor.server.application.*
+import io.ktor.server.engine.*
+import io.ktor.server.netty.*
 import io.ktor.server.plugins.*
-import io.ktor.server.response.*
 import io.ktor.server.routing.*
 
 fun main() {

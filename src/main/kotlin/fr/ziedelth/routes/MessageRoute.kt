@@ -1,43 +1,36 @@
 package fr.ziedelth.routes
 
+import fr.ziedelth.controllers.MessageController
 import fr.ziedelth.models.Message
 import io.ktor.http.*
 import io.ktor.server.application.*
-import io.ktor.server.request.*
 import io.ktor.server.response.*
 import io.ktor.server.routing.*
-import java.util.Calendar
+import java.util.*
 
 fun Route.messageRoute() {
+    val messageController = MessageController()
+
     route("/") {
         get {
-            call.respond(listOf(Message("Hello World", "Ziedelth", Calendar.getInstance())))
-        }
-
-        get("/{text}") {
-            val text = call.parameters["text"]
-
-            if (text.isNullOrEmpty()) {
-                call.respond(HttpStatusCode.BadRequest, "Text is empty")
-                return@get
+            try {
+                val messages = messageController.getMessages() ?: return@get call.respond(
+                    HttpStatusCode.NoContent,
+                    "Messages not found"
+                )
+                call.respond(messages)
+            } catch (e: Exception) {
+                e.message?.let { call.respond(HttpStatusCode.InternalServerError, it) }
             }
-
-            call.respond(Message(text, "Ziedelth", Calendar.getInstance()))
         }
 
-        post {
-            val message = call.receive<Message>()
-            call.respond(message)
-        }
-
-        put {
-            val message = call.receive<Message>()
-            call.respond(message)
-        }
-
-        delete {
-            val message = call.receive<Message>()
-            call.respond(message)
+        get("/add") {
+            try {
+                val message = messageController.addMessage(Message(null, "Hello world", "Ziedelth", Calendar.getInstance()))
+                call.respond(message)
+            } catch (e: Exception) {
+                e.message?.let { call.respond(HttpStatusCode.InternalServerError, it) }
+            }
         }
     }
 }
