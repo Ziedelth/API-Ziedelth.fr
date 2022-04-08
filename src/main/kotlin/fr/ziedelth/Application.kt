@@ -21,6 +21,7 @@ fun main() {
             genreRoute()
             episodeTypeRoute()
             langTypeRoute()
+            animeRoute()
 
             messageAuthor()
             messageRoute()
