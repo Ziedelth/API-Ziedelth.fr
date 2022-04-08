@@ -5,7 +5,7 @@ import org.hibernate.SessionFactory
 import org.hibernate.boot.registry.StandardServiceRegistryBuilder
 import org.hibernate.cfg.Configuration
 
-class AnimeController {
+class EpisodeController {
     private var sessionFactory: SessionFactory? = null
 
     init {
@@ -26,12 +26,12 @@ class AnimeController {
         }
     }
 
-    fun getAnimesByCountry(country: String, page: Int = 1, limit: Int = 9): List<Anime>? {
+    fun getEpisodes(country: String, page: Int = 1, limit: Int = 9): List<Episode>? {
         val session = this.sessionFactory?.openSession()
-        val list =
-            session?.createQuery("FROM Anime WHERE country.tag = :tag ORDER BY name", Anime::class.java)
-                ?.setParameter("tag", country)
-                ?.setFirstResult((page - 1) * limit)?.setMaxResults(limit)?.list()
+        val list = session?.createQuery(
+            "FROM Episode WHERE anime.country.tag = :tag ORDER BY releaseDate DESC, anime.name, season DESC, number DESC, episodeType.id, langType.id",
+            Episode::class.java
+        )?.setParameter("tag", country)?.setFirstResult((page - 1) * limit)?.setMaxResults(limit)?.list()
         session?.close()
         return list
     }

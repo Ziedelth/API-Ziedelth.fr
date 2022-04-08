@@ -22,6 +22,8 @@ fun main() {
             episodeTypeRoute()
             langTypeRoute()
             animeRoute()
+            episodeRoute()
+            scanRoute()
         }
     }.start(wait = true)
 }

@@ -1,5 +1,6 @@
 package fr.ziedelth.models
 
+import org.hibernate.Hibernate
 import org.hibernate.annotations.LazyCollection
 import org.hibernate.annotations.LazyCollectionOption
 import java.io.Serializable
@@ -12,10 +13,11 @@ data class Anime(
     @GeneratedValue(strategy = GenerationType.IDENTITY)
     val id: Long? = null,
 
-    @ElementCollection(fetch = FetchType.EAGER)
+    @ElementCollection
+    @LazyCollection(LazyCollectionOption.FALSE)
     @CollectionTable(name = "anime_codes", joinColumns = [JoinColumn(name = "anime_id")])
     @Column(name = "code")
-    val codes: List<String>? = null,
+    var codes: List<String>? = null,
 
     @OneToMany
     @LazyCollection(LazyCollectionOption.FALSE)
@@ -41,4 +43,19 @@ data class Anime(
 
     @Column
     val description: String? = null,
-) : Serializable
+) : Serializable {
+    override fun equals(other: Any?): Boolean {
+        if (this === other) return true
+        if (other == null || Hibernate.getClass(this) != Hibernate.getClass(other)) return false
+        other as Anime
+
+        return id != null && id == other.id
+    }
+
+    override fun hashCode(): Int = javaClass.hashCode()
+
+    @Override
+    override fun toString(): String {
+        return this::class.simpleName + "(id = $id , codes = $codes , country = $country , releaseDate = $releaseDate , name = $name , image = $image , description = $description )"
+    }
+}

@@ -1,15 +1,15 @@
 package fr.ziedelth.routes
 
-import fr.ziedelth.controllers.AnimeController
+import fr.ziedelth.controllers.EpisodeController
 import io.ktor.http.*
 import io.ktor.server.application.*
 import io.ktor.server.response.*
 import io.ktor.server.routing.*
 
-fun Route.animeRoute() {
-    val animeController = AnimeController()
+fun Route.episodeRoute() {
+    val episodeController = EpisodeController()
 
-    route("/animes/country/{tag}/page/{page}/limit/{limit}") {
+    route("/episodes/country/{tag}/page/{page}/limit/{limit}") {
         get {
             try {
                 val tag = call.parameters["tag"] ?: return@get call.respond(
@@ -27,12 +27,12 @@ fun Route.animeRoute() {
                     "Limit must be an integer"
                 )
 
-                val animes = animeController.getAnimesByCountry(tag, page, limit) ?: return@get call.respond(
+                val episodes = episodeController.getEpisodes(tag, page, limit) ?: return@get call.respond(
                     HttpStatusCode.NoContent,
-                    "Animes not found"
+                    "Episodes not found"
                 )
 
-                call.respond(animes)
+                call.respond(episodes)
             } catch (e: Exception) {
                 e.message?.let { call.respond(HttpStatusCode.InternalServerError, it) }
             }
