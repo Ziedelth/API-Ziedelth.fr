@@ -30,4 +30,11 @@ class AnimeController {
         session?.close()
         return list
     }
+
+    fun getAnimesByCountry(country: String): List<Anime>? {
+        val session = this.sessionFactory?.openSession()
+        val list = session?.createQuery("FROM Anime WHERE country.tag = :tag", Anime::class.java)?.setParameter("tag", country)?.list()
+        session?.close()
+        return list
+    }
 }

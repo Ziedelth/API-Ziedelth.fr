@@ -11,26 +11,34 @@ fun Route.animeRoute() {
 
     route("/animes") {
         get {
-            println("GET /animes")
-
             try {
-                val animes = animeController.getAnimes()
-
-                if (animes == null) {
-                    println("Animes is null")
-
-                    return@get call.respond(
-                        HttpStatusCode.NoContent,
-                        "Animes not found"
-                    )
-                }
+                val animes = animeController.getAnimes() ?: return@get call.respond(
+                    HttpStatusCode.NoContent,
+                    "Animes not found"
+                )
 
                 call.respond(animes)
             } catch (e: Exception) {
-                println(e)
                 e.message?.let { call.respond(HttpStatusCode.InternalServerError, it) }
             }
         }
 
+        get("/{tag}") {
+            try {
+                val tag = call.parameters["tag"] ?: return@get call.respond(
+                    HttpStatusCode.BadRequest,
+                    "Tag not found"
+                )
+
+                val animes = animeController.getAnimesByCountry(tag) ?: return@get call.respond(
+                    HttpStatusCode.NoContent,
+                    "Animes not found"
+                )
+
+                call.respond(animes)
+            } catch (e: Exception) {
+                e.message?.let { call.respond(HttpStatusCode.InternalServerError, it) }
+            }
+        }
     }
 }
