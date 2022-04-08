@@ -22,9 +22,6 @@ fun main() {
             episodeTypeRoute()
             langTypeRoute()
             animeRoute()
-
-            messageAuthor()
-            messageRoute()
         }
     }.start(wait = true)
 }
