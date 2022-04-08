@@ -19,7 +19,11 @@ data class Anime(
 
     @OneToMany
     @LazyCollection(LazyCollectionOption.FALSE)
-    @JoinTable(name = "anime_genres", joinColumns = [JoinColumn(name = "anime_id", referencedColumnName = "id")], inverseJoinColumns = [JoinColumn(name = "genre_id", referencedColumnName = "id")])
+    @JoinTable(
+        name = "anime_genres",
+        joinColumns = [JoinColumn(name = "anime_id", referencedColumnName = "id")],
+        inverseJoinColumns = [JoinColumn(name = "genre_id", referencedColumnName = "id")]
+    )
     var genres: List<Genre>? = null,
 
     @ManyToOne(fetch = FetchType.EAGER)

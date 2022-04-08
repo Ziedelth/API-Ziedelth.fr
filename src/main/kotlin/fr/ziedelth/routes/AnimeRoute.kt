@@ -31,5 +31,6 @@ fun Route.animeRoute() {
                 e.message?.let { call.respond(HttpStatusCode.InternalServerError, it) }
             }
         }
+
     }
 }
