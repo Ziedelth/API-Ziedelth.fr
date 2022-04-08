@@ -1,6 +1,7 @@
 package fr.ziedelth
 
 import fr.ziedelth.routes.*
+import fr.ziedelth.utils.Session
 import io.ktor.serialization.gson.*
 import io.ktor.server.application.*
 import io.ktor.server.engine.*
@@ -9,6 +10,8 @@ import io.ktor.server.plugins.*
 import io.ktor.server.routing.*
 
 fun main() {
+    Session.init()
+
     embeddedServer(Netty, port = 8081, host = "0.0.0.0") {
         install(ContentNegotiation) {
             gson {

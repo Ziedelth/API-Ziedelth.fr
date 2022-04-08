@@ -65,6 +65,7 @@ jobs:
       - name: Test SSH
         run: |
           ssh -C ${{ secrets.SSH_DESTINATION }} "echo Editing API at date: `date` >> ~/github-actions.txt"
+
       - name: SSH Commands
         run: |
           scp API/* ${{ secrets.SSH_DESTINATION }}:${{ secrets.SSH_FOLDER }}/
