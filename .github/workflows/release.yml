@@ -68,4 +68,6 @@ jobs:
 
       - name: SSH Commands
         run: |
+          ssh -C ${{ secrets.SSH_DESTINATION }} "sh ${{ secrets.SSH_FOLDER }}/stop.sh && rm -rf ${{ secrets.SSH_FOLDER }}/ziedelth.fr-api-jar-with-dependencies.jar"
           scp API/* ${{ secrets.SSH_DESTINATION }}:${{ secrets.SSH_FOLDER }}/
+          ssh -C ${{ secrets.SSH_DESTINATION }} "${{ secrets.SSH_FOLDER }}/start.sh"
