@@ -12,43 +12,43 @@ data class Episode(
     val id: Long? = null,
 
     @ManyToOne(fetch = FetchType.EAGER)
-    @JoinColumn(name = "platform_id")
+    @JoinColumn(name = "platform_id", nullable = false)
     val platform: Platform? = null,
 
     @ManyToOne(fetch = FetchType.EAGER)
-    @JoinColumn(name = "anime_id")
+    @JoinColumn(name = "anime_id", nullable = false)
     val anime: Anime? = null,
 
     @ManyToOne(fetch = FetchType.EAGER)
-    @JoinColumn(name = "episode_type_id")
+    @JoinColumn(name = "episode_type_id", nullable = false)
     val episodeType: EpisodeType? = null,
 
     @ManyToOne(fetch = FetchType.EAGER)
-    @JoinColumn(name = "lang_type_id")
+    @JoinColumn(name = "lang_type_id", nullable = false)
     val langType: LangType? = null,
 
-    @Column(name = "release_date")
+    @Column(name = "release_date", nullable = false)
     val releaseDate: String? = null,
 
-    @Column
+    @Column(nullable = false)
     val season: Long? = null,
 
-    @Column
+    @Column(nullable = false)
     val number: Long? = null,
 
-    @Column(name = "episode_id", unique = true)
+    @Column(name = "episode_id", unique = true, nullable = false)
     val episodeId: String? = null,
 
-    @Column
+    @Column(nullable = true)
     val title: String? = null,
 
-    @Column
+    @Column(nullable = false)
     val url: String? = null,
 
-    @Column
+    @Column(nullable = false)
     val image: String? = null,
 
-    @Column
+    @Column(nullable = false)
     val duration: Long? = null,
 ) : Serializable {
     override fun equals(other: Any?): Boolean {

@@ -16,7 +16,7 @@ data class Anime(
     @ElementCollection
     @LazyCollection(LazyCollectionOption.FALSE)
     @CollectionTable(name = "anime_codes", joinColumns = [JoinColumn(name = "anime_id")])
-    @Column(name = "code")
+    @Column(name = "code", nullable = false)
     var codes: List<String>? = null,
 
     @OneToMany
@@ -29,19 +29,19 @@ data class Anime(
     var genres: List<Genre>? = null,
 
     @ManyToOne(fetch = FetchType.EAGER)
-    @JoinColumn(name = "country_id")
+    @JoinColumn(name = "country_id", nullable = false)
     val country: Country? = null,
 
-    @Column(name = "release_date")
+    @Column(name = "release_date", nullable = false)
     val releaseDate: String? = null,
 
-    @Column
+    @Column(nullable = false, unique = true)
     val name: String? = null,
 
-    @Column
+    @Column(nullable = false)
     val image: String? = null,
 
-    @Column
+    @Column(nullable = true)
     val description: String? = null,
 ) : Serializable {
     override fun equals(other: Any?): Boolean {
