@@ -35,4 +35,14 @@ class EpisodeController {
         session?.close()
         return list
     }
+
+    fun getEpisodesByAnime(animeId: Long): List<Episode>? {
+        val session = this.sessionFactory?.openSession()
+        val list = session?.createQuery(
+            "FROM Episode WHERE anime.id = :animeId ORDER BY releaseDate DESC, anime.name, season DESC, number DESC, episodeType.id, langType.id",
+            Episode::class.java
+        )?.setParameter("animeId", animeId)?.list()
+        session?.close()
+        return list
+    }
 }

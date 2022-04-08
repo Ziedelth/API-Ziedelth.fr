@@ -9,8 +9,8 @@ import io.ktor.server.routing.*
 fun Route.scanRoute() {
     val scanController = ScanController()
 
-    route("/scans/country/{tag}/page/{page}/limit/{limit}") {
-        get {
+    route("/scans") {
+        get("/country/{tag}/page/{page}/limit/{limit}") {
             try {
                 val tag = call.parameters["tag"] ?: return@get call.respond(
                     HttpStatusCode.BadRequest,
@@ -30,6 +30,24 @@ fun Route.scanRoute() {
                 val scans = scanController.getScans(tag, page, limit) ?: return@get call.respond(
                     HttpStatusCode.NoContent,
                     "Scans not found"
+                )
+
+                call.respond(scans)
+            } catch (e: Exception) {
+                e.message?.let { call.respond(HttpStatusCode.InternalServerError, it) }
+            }
+        }
+
+        get("/anime/{id}") {
+            try {
+                val id = call.parameters["id"]?.toLongOrNull() ?: return@get call.respond(
+                    HttpStatusCode.BadRequest,
+                    "Id must be an integer"
+                )
+
+                val scans = scanController.getScansByAnime(id) ?: return@get call.respond(
+                    HttpStatusCode.NoContent,
+                    "Episodes not found"
                 )
 
                 call.respond(scans)

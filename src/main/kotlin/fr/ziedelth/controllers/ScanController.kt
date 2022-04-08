@@ -35,4 +35,14 @@ class ScanController {
         session?.close()
         return list
     }
+
+    fun getScansByAnime(animeId: Long): List<Scan>? {
+        val session = this.sessionFactory?.openSession()
+        val list = session?.createQuery(
+            "FROM Scan WHERE anime.id = :animeId ORDER BY releaseDate DESC, anime.name, number DESC, episodeType.id, langType.id",
+            Scan::class.java
+        )?.setParameter("animeId", animeId)?.list()
+        session?.close()
+        return list
+    }
 }

@@ -9,8 +9,8 @@ import io.ktor.server.routing.*
 fun Route.episodeRoute() {
     val episodeController = EpisodeController()
 
-    route("/episodes/country/{tag}/page/{page}/limit/{limit}") {
-        get {
+    route("/episodes") {
+        get("/country/{tag}/page/{page}/limit/{limit}") {
             try {
                 val tag = call.parameters["tag"] ?: return@get call.respond(
                     HttpStatusCode.BadRequest,
@@ -28,6 +28,24 @@ fun Route.episodeRoute() {
                 )
 
                 val episodes = episodeController.getEpisodes(tag, page, limit) ?: return@get call.respond(
+                    HttpStatusCode.NoContent,
+                    "Episodes not found"
+                )
+
+                call.respond(episodes)
+            } catch (e: Exception) {
+                e.message?.let { call.respond(HttpStatusCode.InternalServerError, it) }
+            }
+        }
+
+        get("/anime/{id}") {
+            try {
+                val id = call.parameters["id"]?.toLongOrNull() ?: return@get call.respond(
+                    HttpStatusCode.BadRequest,
+                    "Id must be an integer"
+                )
+
+                val episodes = episodeController.getEpisodesByAnime(id) ?: return@get call.respond(
                     HttpStatusCode.NoContent,
                     "Episodes not found"
                 )
