@@ -15,8 +15,6 @@ fun main() {
 
     embeddedServer(Netty, port = 8081, host = "0.0.0.0") {
         install(CORS) {
-            allowCredentials = true
-            maxAgeInSeconds = 3600
             anyHost()
             HttpMethod.DefaultMethods.forEach { method(it) }
         }
