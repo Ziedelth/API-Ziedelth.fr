@@ -14,8 +14,13 @@ fun main() {
 
     embeddedServer(Netty, port = 8081, host = "0.0.0.0") {
         install(ContentNegotiation) {
-            gson {
-            }
+            gson {}
+        }
+
+        install(CORS) {
+            allowCredentials = true
+            maxAgeInSeconds = 3600
+            anyHost()
         }
 
         routing {
