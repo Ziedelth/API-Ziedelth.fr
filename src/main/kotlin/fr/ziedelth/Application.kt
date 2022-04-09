@@ -2,6 +2,7 @@ package fr.ziedelth
 
 import fr.ziedelth.routes.*
 import fr.ziedelth.utils.Session
+import io.ktor.http.*
 import io.ktor.serialization.gson.*
 import io.ktor.server.application.*
 import io.ktor.server.engine.*
@@ -13,14 +14,15 @@ fun main() {
     Session.init()
 
     embeddedServer(Netty, port = 8081, host = "0.0.0.0") {
-        install(ContentNegotiation) {
-            gson {}
-        }
-
         install(CORS) {
             allowCredentials = true
             maxAgeInSeconds = 3600
             anyHost()
+            HttpMethod.DefaultMethods.forEach { method(it) }
+        }
+
+        install(ContentNegotiation) {
+            gson {}
         }
 
         routing {
