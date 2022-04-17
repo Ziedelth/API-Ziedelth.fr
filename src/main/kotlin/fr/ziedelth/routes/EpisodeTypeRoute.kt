@@ -9,7 +9,7 @@ import io.ktor.server.routing.*
 fun Route.episodeTypeRoute() {
     val episodeTypeController = EpisodeTypeController()
 
-    route("/episode-types") {
+    route("/v1/episode-types") {
         get {
             try {
                 val episodeTypes = episodeTypeController.getEpisodeTypes() ?: return@get call.respond(

@@ -4,30 +4,35 @@ import fr.ziedelth.models.*
 import org.hibernate.SessionFactory
 import org.hibernate.boot.registry.StandardServiceRegistryBuilder
 import org.hibernate.cfg.Configuration
-import java.io.File
+import kotlin.system.exitProcess
 
 object Session {
-    private val currentFolder = File(Session::class.java.protectionDomain.codeSource.location.path).parent
     lateinit var sessionFactory: SessionFactory
-
-    private fun getFile(name: String) = File(this.currentFolder, name)
 
     fun init() {
         try {
-            val configuration = Configuration()
-            configuration.configure(getFile("hibernate.cfg.xml"))
-            configuration.addAnnotatedClass(Platform::class.java)
-            configuration.addAnnotatedClass(Country::class.java)
-            configuration.addAnnotatedClass(Genre::class.java)
-            configuration.addAnnotatedClass(Anime::class.java)
-            configuration.addAnnotatedClass(EpisodeType::class.java)
-            configuration.addAnnotatedClass(LangType::class.java)
-            configuration.addAnnotatedClass(Episode::class.java)
-            configuration.addAnnotatedClass(Scan::class.java)
-            val serviceRegistry = StandardServiceRegistryBuilder().applySettings(configuration.properties).build()
-            this.sessionFactory = configuration.buildSessionFactory(serviceRegistry)
+            val jFile = JFile("hibernate.cfg.xml")
+
+            // If the file doesn't exist, throw an exception
+            if (!jFile.exists())
+                throw Exception("Hibernate configuration file not found")
+
+            with(Configuration()) {
+                configure(jFile.file)
+                addAnnotatedClass(Platform::class.java)
+                addAnnotatedClass(Country::class.java)
+                addAnnotatedClass(Genre::class.java)
+                addAnnotatedClass(Anime::class.java)
+                addAnnotatedClass(EpisodeType::class.java)
+                addAnnotatedClass(LangType::class.java)
+                addAnnotatedClass(Episode::class.java)
+                addAnnotatedClass(Scan::class.java)
+                val serviceRegistry = StandardServiceRegistryBuilder().applySettings(properties).build()
+                sessionFactory = buildSessionFactory(serviceRegistry)
+            }
         } catch (e: Exception) {
             e.printStackTrace()
+            exitProcess(1)
         }
     }
 }

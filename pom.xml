@@ -9,7 +9,7 @@
     <description>api-ktor</description>
 
     <properties>
-        <ktor_version>2.0.0-beta-1</ktor_version>
+        <ktor_version>2.0.0</ktor_version>
         <kotlin.code.style>official</kotlin.code.style>
         <kotlin_version>1.6.20</kotlin_version>
         <logback_version>1.2.11</logback_version>
@@ -95,6 +95,16 @@
             <groupId>org.mariadb.jdbc</groupId>
             <artifactId>mariadb-java-client</artifactId>
             <version>3.0.3</version>
+        </dependency>
+        <dependency>
+            <groupId>com.sun.mail</groupId>
+            <artifactId>javax.mail</artifactId>
+            <version>1.6.2</version>
+        </dependency>
+        <dependency>
+            <groupId>com.google.code.gson</groupId>
+            <artifactId>gson</artifactId>
+            <version>2.9.0</version>
         </dependency>
     </dependencies>
 

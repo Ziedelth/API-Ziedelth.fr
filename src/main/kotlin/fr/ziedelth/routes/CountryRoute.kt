@@ -9,7 +9,7 @@ import io.ktor.server.routing.*
 fun Route.countryRoute() {
     val countryController = CountryController()
 
-    route("/countries") {
+    route("/v1/countries") {
         get {
             try {
                 val countries = countryController.getCountries() ?: return@get call.respond(

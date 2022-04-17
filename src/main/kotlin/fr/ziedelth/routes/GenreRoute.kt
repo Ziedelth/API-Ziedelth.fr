@@ -9,7 +9,7 @@ import io.ktor.server.routing.*
 fun Route.genreRoute() {
     val genreController = GenreController()
 
-    route("/genres") {
+    route("/v1/genres") {
         get {
             try {
                 val genres = genreController.getGenres() ?: return@get call.respond(

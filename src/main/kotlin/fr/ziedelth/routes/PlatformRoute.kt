@@ -9,7 +9,7 @@ import io.ktor.server.routing.*
 fun Route.platformRoute() {
     val platformController = PlatformController()
 
-    route("/platforms") {
+    route("/v1/platforms") {
         get {
             try {
                 val platforms = platformController.getPlatforms() ?: return@get call.respond(

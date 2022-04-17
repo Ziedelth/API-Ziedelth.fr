@@ -9,7 +9,7 @@ import io.ktor.server.routing.*
 fun Route.scanRoute() {
     val scanController = ScanController()
 
-    route("/scans") {
+    route("/v1/scans") {
         get("/country/{tag}/page/{page}/limit/{limit}") {
             try {
                 val tag = call.parameters["tag"] ?: return@get call.respond(

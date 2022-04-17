@@ -9,7 +9,7 @@ import io.ktor.server.routing.*
 fun Route.episodeRoute() {
     val episodeController = EpisodeController()
 
-    route("/episodes") {
+    route("/v1/episodes") {
         get("/country/{tag}/page/{page}/limit/{limit}") {
             try {
                 val tag = call.parameters["tag"] ?: return@get call.respond(

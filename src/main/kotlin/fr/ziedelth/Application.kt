@@ -7,7 +7,8 @@ import io.ktor.serialization.gson.*
 import io.ktor.server.application.*
 import io.ktor.server.engine.*
 import io.ktor.server.netty.*
-import io.ktor.server.plugins.*
+import io.ktor.server.plugins.contentnegotiation.*
+import io.ktor.server.plugins.cors.*
 import io.ktor.server.routing.*
 
 fun main() {
@@ -16,7 +17,7 @@ fun main() {
     embeddedServer(Netty, port = 8081, host = "0.0.0.0") {
         install(CORS) {
             anyHost()
-            HttpMethod.DefaultMethods.forEach { method(it) }
+            HttpMethod.DefaultMethods.forEach { allowMethod(it) }
         }
 
         install(ContentNegotiation) {
@@ -32,6 +33,8 @@ fun main() {
             animeRoute()
             episodeRoute()
             scanRoute()
+            statisticRoute()
+            simulcastRoute()
         }
     }.start(wait = true)
 }

@@ -9,7 +9,7 @@ import io.ktor.server.routing.*
 fun Route.langTypeRoute() {
     val langTypeController = LangTypeController()
 
-    route("/lang-types") {
+    route("/v1/lang-types") {
         get {
             try {
                 val langTypes = langTypeController.getLangTypes() ?: return@get call.respond(
