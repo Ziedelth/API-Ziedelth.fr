@@ -72,6 +72,7 @@ fun Route.animeRoute() {
                 call.respond(animes)
             } catch (e: Exception) {
                 e.message?.let { call.respond(HttpStatusCode.InternalServerError, it) }
+                e.printStackTrace()
             }
         }
     }

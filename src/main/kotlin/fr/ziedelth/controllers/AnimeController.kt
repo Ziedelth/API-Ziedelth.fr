@@ -4,6 +4,7 @@ import fr.ziedelth.models.Anime
 import fr.ziedelth.utils.ISO8601
 import fr.ziedelth.utils.Session
 import fr.ziedelth.utils.Simulcast
+import kotlin.math.min
 
 class AnimeController {
     fun getAnimesByCountry(country: String, page: Int = 1, limit: Int = 9): List<Anime>? {
@@ -30,8 +31,8 @@ class AnimeController {
 
         val simulcasts = simulcastController.getSimulcasts() ?: return null
         val getSimulcast = simulcasts.firstOrNull { it["id"] == simulcastId } ?: return null
-        return list?.filter { Simulcast.getSimulcast(ISO8601.fromUTCDate(it.releaseDate)) == getSimulcast["simulcast"] }
-            ?.subList((page - 1) * limit, (page - 1) * limit + limit)
+        val filter = list?.filter { Simulcast.getSimulcast(ISO8601.fromUTCDate(it.releaseDate)) == getSimulcast["simulcast"] } ?: return null
+        return filter.subList((page - 1) * limit, min(filter.size, page * limit))
     }
 
     fun mergeAnime(from: Anime, to: Anime) {

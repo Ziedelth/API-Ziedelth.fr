@@ -12,19 +12,27 @@ import io.ktor.server.plugins.cors.*
 import io.ktor.server.routing.*
 
 fun main() {
+    println("Init...")
+
+    // Print session init
+    println("Init session...")
     Session.init()
 
+    println("Init routes...")
     embeddedServer(Netty, port = 8081, host = "0.0.0.0") {
         install(CORS) {
+            println("Init cors...")
             anyHost()
             HttpMethod.DefaultMethods.forEach { allowMethod(it) }
         }
 
         install(ContentNegotiation) {
+            println("Init contentNegotiation...")
             gson {}
         }
 
         routing {
+            println("Init routes...")
             countryRoute()
             platformRoute()
             genreRoute()
@@ -36,5 +44,7 @@ fun main() {
             statisticRoute()
             simulcastRoute()
         }
+
+        println("Init done. Listen on port 8081")
     }.start(wait = true)
 }
