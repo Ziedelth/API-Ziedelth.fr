@@ -8,7 +8,7 @@ class SimulcastController {
     fun getSimulcasts(): List<Map<String, Any>>? {
         val session = Session.sessionFactory.openSession()
         val list =
-            session?.createQuery("SELECT DISTINCT releaseDate FROM Anime ORDER BY releaseDate ASC", String::class.java)
+            session?.createQuery("SELECT DISTINCT releaseDate FROM Episode ORDER BY releaseDate ASC", String::class.java)
                 ?.list()?.toSet()
         session?.close()
         return list?.mapNotNull { Simulcast.getSimulcast(ISO8601.fromUTCDate(it)) }?.toSet()
