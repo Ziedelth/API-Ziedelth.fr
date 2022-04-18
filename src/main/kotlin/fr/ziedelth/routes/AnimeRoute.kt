@@ -78,6 +78,29 @@ fun Route.animeRoute() {
             }
         }
 
+        get("/country/{tag}/search/{search}") {
+            try {
+                val tag = call.parameters["tag"] ?: return@get call.respond(
+                    HttpStatusCode.BadRequest,
+                    "Tag not found"
+                )
+
+                val search = call.parameters["search"] ?: return@get call.respond(
+                    HttpStatusCode.BadRequest,
+                    "Search not found"
+                )
+
+                val animes = animeController.searchAnime(tag, search) ?: return@get call.respond(
+                    HttpStatusCode.NoContent,
+                    "Animes not found"
+                )
+
+                call.respond(animes)
+            } catch (e: Exception) {
+                e.message?.let { call.respond(HttpStatusCode.InternalServerError, it) }
+            }
+        }
+
         get("/merge/from/{fromId}/to/{toId}") {
             try {
                 val fromId = call.parameters["fromId"]?.toLongOrNull() ?: return@get call.respond(
