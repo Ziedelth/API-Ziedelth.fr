@@ -6,7 +6,7 @@ import fr.ziedelth.utils.Session
 
 class EpisodeController {
     fun getEpisodes(country: String, page: Int = 1, limit: Int = 9): List<Episode>? {
-        val session = Session.sessionFactory.openSession()
+        val session = Session.jSessionFactory.openSession()
         val list = session?.createQuery(
             "FROM Episode WHERE anime.country.tag = :tag ORDER BY releaseDate DESC, anime.name, season DESC, number DESC, episodeType.id, langType.id, id DESC",
             Episode::class.java

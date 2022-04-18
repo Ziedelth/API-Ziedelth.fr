@@ -7,7 +7,7 @@ object EpisodeAnimeCache {
     private val cache = mutableMapOf<Long, Cache<List<Episode>?>>()
 
     private fun g(animeId: Long): List<Episode>? {
-        val session = Session.sessionFactory.openSession()
+        val session = Session.jSessionFactory.openSession()
         val list = session?.createQuery(
             "FROM Episode WHERE anime.id = :animeId ORDER BY releaseDate DESC, anime.name, season DESC, number DESC, episodeType.id, langType.id, id DESC",
             Episode::class.java

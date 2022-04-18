@@ -5,7 +5,7 @@ import fr.ziedelth.utils.Session
 
 class PlatformController {
     fun getPlatforms(): List<Platform>? {
-        val session = Session.sessionFactory.openSession()
+        val session = Session.jSessionFactory.openSession()
         val list = session?.createQuery("FROM Platform", Platform::class.java)?.list()
         session?.close()
         return list

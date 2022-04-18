@@ -6,7 +6,7 @@ import java.util.*
 
 class StatisticController {
     fun getCount(days: Int): List<Map<String, Any>> {
-        val session = Session.sessionFactory.openSession()
+        val session = Session.jSessionFactory.openSession()
         val list = mutableListOf<Map<String, Any>>()
 
         for (i in (days - 1) downTo 0) {

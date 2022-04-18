@@ -3,7 +3,6 @@ package fr.ziedelth.controllers
 import fr.ziedelth.caches.AnimeCache
 import fr.ziedelth.caches.AnimeSimulcastCache
 import fr.ziedelth.models.Anime
-import fr.ziedelth.models.Episode
 import fr.ziedelth.utils.Session
 import kotlin.math.min
 
@@ -30,7 +29,7 @@ class AnimeController {
     }
 
     fun getAnime(id: Long): Anime? {
-        val session = Session.sessionFactory.openSession()
+        val session = Session.jSessionFactory.openSession()
         val anime = session?.createQuery(
             "FROM Anime WHERE id = :animeId",
             Anime::class.java
@@ -40,7 +39,7 @@ class AnimeController {
     }
 
     fun mergeAnime(from: Anime, to: Anime, episodeController: EpisodeController, scanController: ScanController) {
-        val session = Session.sessionFactory.openSession()
+        val session = Session.jSessionFactory.openSession()
         val transaction = session.beginTransaction()
 
         if (to.image.isNullOrEmpty() && !from.image.isNullOrEmpty()) to.image = from.image
