@@ -1,6 +1,8 @@
 package fr.ziedelth.routes
 
 import fr.ziedelth.controllers.AnimeController
+import fr.ziedelth.controllers.EpisodeController
+import fr.ziedelth.controllers.ScanController
 import fr.ziedelth.controllers.SimulcastController
 import io.ktor.http.*
 import io.ktor.server.application.*
@@ -70,6 +72,29 @@ fun Route.animeRoute() {
                     )
 
                 call.respond(animes)
+            } catch (e: Exception) {
+                e.message?.let { call.respond(HttpStatusCode.InternalServerError, it) }
+                e.printStackTrace()
+            }
+        }
+
+        get("/merge/from/{fromId}/to/{toId}") {
+            try {
+                val fromId = call.parameters["fromId"]?.toLongOrNull() ?: return@get call.respond(
+                    HttpStatusCode.BadRequest,
+                    "FromId must be an integer"
+                )
+
+                val toId = call.parameters["toId"]?.toLongOrNull() ?: return@get call.respond(
+                    HttpStatusCode.BadRequest,
+                    "ToId must be an integer"
+                )
+
+                val episodeController = EpisodeController()
+                val scanController = ScanController()
+
+                animeController.mergeAnime(fromId, toId, episodeController, scanController)
+                call.respond(HttpStatusCode.OK, "Merged")
             } catch (e: Exception) {
                 e.message?.let { call.respond(HttpStatusCode.InternalServerError, it) }
                 e.printStackTrace()

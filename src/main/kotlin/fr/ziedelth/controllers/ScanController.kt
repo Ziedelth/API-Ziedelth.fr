@@ -1,5 +1,6 @@
 package fr.ziedelth.controllers
 
+import fr.ziedelth.caches.ScanAnimeCache
 import fr.ziedelth.models.Scan
 import fr.ziedelth.utils.Session
 
@@ -14,13 +15,5 @@ class ScanController {
         return list
     }
 
-    fun getScansByAnime(animeId: Long): List<Scan>? {
-        val session = Session.sessionFactory.openSession()
-        val list = session?.createQuery(
-            "FROM Scan WHERE anime.id = :animeId ORDER BY releaseDate DESC, anime.name, number DESC, episodeType.id, langType.id, id DESC",
-            Scan::class.java
-        )?.setParameter("animeId", animeId)?.list()
-        session?.close()
-        return list
-    }
+    fun getScansByAnime(animeId: Long) = ScanAnimeCache.get(animeId)
 }

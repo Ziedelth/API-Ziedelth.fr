@@ -17,7 +17,7 @@ data class Scan(
 
     @ManyToOne(fetch = FetchType.EAGER)
     @JoinColumn(name = "anime_id", nullable = false)
-    val anime: Anime? = null,
+    var anime: Anime? = null,
 
     @ManyToOne(fetch = FetchType.EAGER)
     @JoinColumn(name = "episode_type_id", nullable = false)

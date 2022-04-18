@@ -17,7 +17,7 @@ data class Anime(
     @LazyCollection(LazyCollectionOption.FALSE)
     @CollectionTable(name = "anime_codes", joinColumns = [JoinColumn(name = "anime_id")])
     @Column(name = "code", nullable = false)
-    var codes: List<String>? = null,
+    var codes: MutableList<String>? = null,
 
     @OneToMany
     @LazyCollection(LazyCollectionOption.FALSE)
@@ -26,7 +26,7 @@ data class Anime(
         joinColumns = [JoinColumn(name = "anime_id", referencedColumnName = "id")],
         inverseJoinColumns = [JoinColumn(name = "genre_id", referencedColumnName = "id")]
     )
-    var genres: List<Genre>? = null,
+    var genres: MutableList<Genre>? = null,
 
     @ManyToOne(fetch = FetchType.EAGER)
     @JoinColumn(name = "country_id", nullable = false)
@@ -39,10 +39,10 @@ data class Anime(
     val name: String? = null,
 
     @Column(nullable = false)
-    val image: String? = null,
+    var image: String? = null,
 
     @Column(nullable = true)
-    val description: String? = null,
+    var description: String? = null,
 ) : Serializable {
     override fun equals(other: Any?): Boolean {
         if (this === other) return true

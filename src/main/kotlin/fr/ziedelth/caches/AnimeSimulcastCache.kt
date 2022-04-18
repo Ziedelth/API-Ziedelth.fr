@@ -39,7 +39,7 @@ object AnimeSimulcastCache {
             val key = filter.keys.first()
             val cache = filter.values.first()
 
-            if (System.currentTimeMillis() - cache.lastCheck < 5 * 60 * 1000) return cache.value
+            if (!cache.hasExpired()) return cache.value
 
             cache.lastCheck = System.currentTimeMillis()
             cache.value = g(simulcastController, country, simulcastId)
