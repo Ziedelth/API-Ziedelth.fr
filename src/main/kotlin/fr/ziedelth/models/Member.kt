@@ -2,7 +2,7 @@ package fr.ziedelth.models
 
 import org.hibernate.Hibernate
 import java.io.Serializable
-import java.util.Calendar
+import java.util.*
 import javax.persistence.*
 
 @Entity

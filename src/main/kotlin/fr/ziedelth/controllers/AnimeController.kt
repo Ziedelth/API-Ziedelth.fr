@@ -29,7 +29,7 @@ class AnimeController {
     }
 
     fun getAnime(id: Long): Anime? {
-        val session = Session.jSessionFactory.openSession()
+        val session = Session.sessionFactory.openSession()
         val anime = session?.createQuery(
             "FROM Anime WHERE id = :animeId",
             Anime::class.java
@@ -39,7 +39,7 @@ class AnimeController {
     }
 
     fun mergeAnime(from: Anime, to: Anime, episodeController: EpisodeController, scanController: ScanController) {
-        val session = Session.jSessionFactory.openSession()
+        val session = Session.sessionFactory.openSession()
         val transaction = session.beginTransaction()
 
         if (to.image.isNullOrEmpty() && !from.image.isNullOrEmpty()) to.image = from.image
@@ -80,5 +80,6 @@ class AnimeController {
         session.close()
     }
 
-    fun mergeAnime(from: Long, to: Long, episodeController: EpisodeController, scanController: ScanController) = mergeAnime(getAnime(from)!!, getAnime(to)!!, episodeController, scanController)
+    fun mergeAnime(from: Long, to: Long, episodeController: EpisodeController, scanController: ScanController) =
+        mergeAnime(getAnime(from)!!, getAnime(to)!!, episodeController, scanController)
 }

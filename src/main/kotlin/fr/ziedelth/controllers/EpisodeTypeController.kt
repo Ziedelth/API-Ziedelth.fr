@@ -5,7 +5,7 @@ import fr.ziedelth.utils.Session
 
 class EpisodeTypeController {
     fun getEpisodeTypes(): List<EpisodeType>? {
-        val session = Session.jSessionFactory.openSession()
+        val session = Session.sessionFactory.openSession()
         val list = session?.createQuery("FROM EpisodeType", EpisodeType::class.java)?.list()
         session?.close()
         return list

@@ -6,7 +6,7 @@ import fr.ziedelth.utils.Session
 
 class ScanController {
     fun getScans(country: String, page: Int = 1, limit: Int = 9): List<Scan>? {
-        val session = Session.jSessionFactory.openSession()
+        val session = Session.sessionFactory.openSession()
         val list = session?.createQuery(
             "FROM Scan WHERE anime.country.tag = :tag ORDER BY releaseDate DESC, anime.name, number DESC, episodeType.id, langType.id, id DESC",
             Scan::class.java

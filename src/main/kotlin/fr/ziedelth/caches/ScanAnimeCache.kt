@@ -7,7 +7,7 @@ object ScanAnimeCache {
     private val cache = mutableMapOf<Long, Cache<List<Scan>?>>()
 
     private fun g(animeId: Long): List<Scan>? {
-        val session = Session.jSessionFactory.openSession()
+        val session = Session.sessionFactory.openSession()
         val list = session?.createQuery(
             "FROM Scan WHERE anime.id = :animeId ORDER BY releaseDate DESC, anime.name, number DESC, episodeType.id, langType.id, id DESC",
             Scan::class.java

@@ -7,20 +7,15 @@ import org.hibernate.cfg.Configuration
 import kotlin.system.exitProcess
 
 object Session {
-    lateinit var jSessionFactory: SessionFactory
-    lateinit var zSessionFactory: SessionFactory
+    lateinit var sessionFactory: SessionFactory
 
     fun init() {
         try {
-            val jFile = JFile("jhibernate.cfg.xml")
-            val zFile = JFile("zhibernate.cfg.xml")
+            val jFile = JFile("hibernate.cfg.xml")
 
             // If the file doesn't exist, throw an exception
             if (!jFile.exists())
-                throw Exception("JHibernate configuration file not found")
-
-            if (!zFile.exists())
-                throw Exception("ZHibernate configuration file not found")
+                throw Exception("Hibernate configuration file not found")
 
             val configuration = Configuration()
 
@@ -37,11 +32,7 @@ object Session {
 
                 configure(jFile.file)
                 val jServiceRegistry = StandardServiceRegistryBuilder().applySettings(properties).build()
-                jSessionFactory = buildSessionFactory(jServiceRegistry)
-
-                configure(zFile.file)
-                val zServiceRegistry = StandardServiceRegistryBuilder().applySettings(properties).build()
-                zSessionFactory = buildSessionFactory(zServiceRegistry)
+                sessionFactory = buildSessionFactory(jServiceRegistry)
             }
         } catch (e: Exception) {
             e.printStackTrace()

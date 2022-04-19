@@ -7,7 +7,7 @@ object AnimeCache {
     private val cache = mutableMapOf<String, Cache<List<Anime>?>>()
 
     private fun g(country: String): List<Anime>? {
-        val session = Session.jSessionFactory.openSession()
+        val session = Session.sessionFactory.openSession()
         val list = session?.createQuery("FROM Anime WHERE country.tag = :tag ORDER BY name", Anime::class.java)
             ?.setParameter("tag", country)?.list()
         session?.close()

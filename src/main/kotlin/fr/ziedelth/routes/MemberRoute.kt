@@ -1,7 +1,6 @@
 package fr.ziedelth.routes
 
 import fr.ziedelth.controllers.MemberController
-import fr.ziedelth.models.Member
 import io.ktor.http.*
 import io.ktor.server.application.*
 import io.ktor.server.request.*
@@ -30,6 +29,20 @@ fun Route.memberRoute() {
 
                 // Return member
                 call.respond(HttpStatusCode.Created, member)
+            }
+        }
+
+        route("/login") {
+            post {
+                val formParameters = call.receiveParameters()
+                // Get received email
+                val email = formParameters["email"] ?: throw IllegalArgumentException("Email is missing")
+                // Get received password
+                val password = formParameters["password"] ?: throw IllegalArgumentException("Password is missing")
+
+                // Login member
+                val pair = memberController.loginWithCredentials(email, password)
+                call.respond(pair.first, pair.second)
             }
         }
     }

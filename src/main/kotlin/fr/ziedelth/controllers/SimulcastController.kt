@@ -6,7 +6,7 @@ import fr.ziedelth.utils.Simulcast
 
 class SimulcastController {
     fun getSimulcasts(): List<Map<String, Any>>? {
-        val session = Session.jSessionFactory.openSession()
+        val session = Session.sessionFactory.openSession()
         val list =
             session?.createQuery(
                 "SELECT DISTINCT releaseDate FROM Episode ORDER BY releaseDate ASC",

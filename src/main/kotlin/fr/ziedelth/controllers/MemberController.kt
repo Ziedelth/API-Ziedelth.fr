@@ -1,17 +1,18 @@
 package fr.ziedelth.controllers
 
-import fr.ziedelth.models.Anime
 import fr.ziedelth.models.Member
-import fr.ziedelth.utils.JMail
 import fr.ziedelth.utils.Session
+import io.ktor.http.*
 import java.security.MessageDigest
 import java.util.*
 
 class MemberController {
     // Create regex with minimum length of 4 characters and maximum length of 16 characters, with only letters and numbers
     private val pseudoRegex = Regex("^[a-zA-Z\\d]{4,16}$")
+
     // Create regex who check is a valid email
-    private val emailRegex = Regex("^[a-zA-Z\\d.!#$%&'*+/=?^_`{|}~-]+@[a-zA-Z\\d](?:[a-zA-Z\\d-]{0,61}[a-zA-Z\\d])?(?:\\.[a-zA-Z\\d](?:[a-zA-Z\\d-]{0,61}[a-zA-Z\\d])?)*$")
+    private val emailRegex =
+        Regex("^[a-zA-Z\\d.!#$%&'*+/=?^_`{|}~-]+@[a-zA-Z\\d](?:[a-zA-Z\\d-]{0,61}[a-zA-Z\\d])?(?:\\.[a-zA-Z\\d](?:[a-zA-Z\\d-]{0,61}[a-zA-Z\\d])?)*$")
 
     // Check if pseudo is valid
     private fun isPseudoValid(pseudo: String): Boolean {
@@ -20,7 +21,7 @@ class MemberController {
 
     // Check if pseudo is already used
     private fun isPseudoAlreadyUsed(pseudo: String): Boolean {
-        val session = Session.zSessionFactory.openSession()
+        val session = Session.sessionFactory.openSession()
         val member = session?.createQuery(
             "FROM Member WHERE pseudo = :pseudo",
             Member::class.java
@@ -36,7 +37,7 @@ class MemberController {
 
     // Check if email is already used
     private fun isEmailAlreadyUsed(email: String): Boolean {
-        val session = Session.zSessionFactory.openSession()
+        val session = Session.sessionFactory.openSession()
         val member = session?.createQuery(
             "FROM Member WHERE email = :email",
             Member::class.java
@@ -79,6 +80,24 @@ class MemberController {
         return sb.toString()
     }
 
+    private fun getMember(email: String): Member? {
+        val session = Session.sessionFactory.openSession()
+        val member = session?.createQuery(
+            "FROM Member WHERE email = :email",
+            Member::class.java
+        )?.setParameter("email", email)?.list()?.firstOrNull()
+        session?.close()
+        return member
+    }
+
+    private fun hash(random: Int, passwordSalt: String) = when (random) {
+        0 -> sha224(passwordSalt)
+        1 -> sha256(passwordSalt)
+        2 -> sha384(passwordSalt)
+        3 -> sha512(passwordSalt)
+        else -> sha512(passwordSalt)
+    }
+
     fun register(pseudo: String, email: String, password: String): Member? {
         // If pseudo is not valid or already used, return false
         if (!isPseudoValid(pseudo) || isPseudoAlreadyUsed(pseudo)) return null
@@ -92,47 +111,33 @@ class MemberController {
         // Salt password
         val passwordSalt = "$password$random$salt"
         // Hash password
-        val passwordHash = when (random) {
-            0 -> sha224(passwordSalt)
-            1 -> sha256(passwordSalt)
-            2 -> sha384(passwordSalt)
-            3 -> sha512(passwordSalt)
-            else -> sha512(passwordSalt)
-        }
-
-        // Send email
-//        JMail.send(email, "Confirmation de votre compte", """
-//            <div style="margin: 0;">
-//                <div style="display: flex">
-//                    <img src="https://ziedelth.fr/images/favicon.jpg" style="width: 64px; border-radius: 8px" alt="Icon">
-//                    <div style="margin-left: 0.5rem">
-//                        <p style="margin-bottom: 0; font-weight: bold">$pseudo,</p>
-//                        <p style="margin-top: 0">Merci de votre inscription</p>
-//                    </div>
-//                </div>
-//                <div style="margin-top: 1vh">
-//                    <p style="margin-top: 0; margin-bottom: 10px">Veuillez cliquez sur le lien suivant pour terminer votre inscription :</p>
-//                    <a href="#" style="text-decoration: underline; text-decoration-color: black; color: black">Confirmer mon inscription</a>
-//                    <p style="margin-bottom: 0">Votre inscription ne sera effective que si vous cliquez sur le lien de confirmation ci-dessus.</p>
-//                    <i>Vous ne pourrez vous connecter que lorsque votre adresse mail sera confirmée.</i>
-//                    <p style="margin-bottom: 0">Cordialement,</p>
-//                    <p style="margin-top: 0">Ziedelth.fr</p>
-//                    <div>
-//                        <i>Si vous n'êtes pas à l'origine de cette demande, vous pouvez ignorer ce mail.</i>
-//                        <br>
-//                        <i>Cette action n'est valable que 10 minutes.</i>
-//                    </div>
-//
-//                    <div style="margin-top: 0.5vh"><i>Ce mail est envoyé automatiquement, merci de ne pas y répondre.</i></div>
-//                </div>
-//            </div>
-//        """.trimIndent())
+        val passwordHash = hash(random, passwordSalt)
 
         val member = Member(null, Calendar.getInstance(), pseudo, email, false, "$salt$$random$$passwordHash")
         // Save member
-        val session = Session.zSessionFactory.openSession()
+        val session = Session.sessionFactory.openSession()
         session.save(member)
         session.close()
         return member
+    }
+
+    fun loginWithCredentials(email: String, password: String): Pair<HttpStatusCode, String> {
+        // If email is not valid or not used, return false
+        if (!isEmailValid(email) || !isEmailAlreadyUsed(email)) return Pair(
+            HttpStatusCode.BadRequest,
+            "Email is not valid or not used"
+        )
+        // Get member
+        val member = getMember(email) ?: return Pair(HttpStatusCode.NotFound, "Member not found")
+        // Get salt and random
+        val split = member.password?.split("$")
+        val salt = split?.get(0) ?: return Pair(HttpStatusCode.NoContent, "No salt")
+        val random = split[1].toIntOrNull() ?: return Pair(HttpStatusCode.NoContent, "No random")
+        val passwordHashed = split[2]
+        if (passwordHashed != hash(random, "$password$random$salt")) return Pair(
+            HttpStatusCode.Unauthorized,
+            "Wrong password"
+        )
+        return Pair(HttpStatusCode.OK, "OK")
     }
 }

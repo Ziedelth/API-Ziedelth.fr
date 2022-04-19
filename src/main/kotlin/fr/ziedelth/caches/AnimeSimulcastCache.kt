@@ -17,7 +17,7 @@ object AnimeSimulcastCache {
     ) = it.key.first == country && it.key.second == simulcastId
 
     private fun g(simulcastController: SimulcastController, country: String, simulcastId: Int): List<Anime>? {
-        val session = Session.jSessionFactory.openSession()
+        val session = Session.sessionFactory.openSession()
         val list =
             session?.createQuery("FROM Episode WHERE anime.country.tag = :tag ORDER BY anime.name", Episode::class.java)
                 ?.setParameter("tag", country)?.list()
