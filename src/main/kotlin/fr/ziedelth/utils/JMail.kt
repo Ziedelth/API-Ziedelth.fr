@@ -70,7 +70,7 @@ object JMail {
         mimeMessage.setFrom(InternetAddress(mailUsername))
         mimeMessage.setRecipients(Message.RecipientType.TO, InternetAddress.parse(address))
         mimeMessage.subject = subject
-        mimeMessage.setText(message)
+        mimeMessage.setText(message, "utf-8", "html")
         Transport.send(mimeMessage)
     }
 }

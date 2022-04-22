@@ -17,8 +17,9 @@ object Session {
             if (!jFile.exists())
                 throw Exception("Hibernate configuration file not found")
 
-            with(Configuration()) {
-                configure(jFile.file)
+            val configuration = Configuration()
+
+            with(configuration) {
                 addAnnotatedClass(Platform::class.java)
                 addAnnotatedClass(Country::class.java)
                 addAnnotatedClass(Genre::class.java)
@@ -27,8 +28,11 @@ object Session {
                 addAnnotatedClass(LangType::class.java)
                 addAnnotatedClass(Episode::class.java)
                 addAnnotatedClass(Scan::class.java)
-                val serviceRegistry = StandardServiceRegistryBuilder().applySettings(properties).build()
-                sessionFactory = buildSessionFactory(serviceRegistry)
+                addAnnotatedClass(Member::class.java)
+
+                configure(jFile.file)
+                val jServiceRegistry = StandardServiceRegistryBuilder().applySettings(properties).build()
+                sessionFactory = buildSessionFactory(jServiceRegistry)
             }
         } catch (e: Exception) {
             e.printStackTrace()

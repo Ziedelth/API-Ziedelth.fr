@@ -3,7 +3,6 @@ package fr.ziedelth.controllers
 import fr.ziedelth.caches.AnimeCache
 import fr.ziedelth.caches.AnimeSimulcastCache
 import fr.ziedelth.models.Anime
-import fr.ziedelth.models.Episode
 import fr.ziedelth.utils.Session
 import kotlin.math.min
 
@@ -81,5 +80,6 @@ class AnimeController {
         session.close()
     }
 
-    fun mergeAnime(from: Long, to: Long, episodeController: EpisodeController, scanController: ScanController) = mergeAnime(getAnime(from)!!, getAnime(to)!!, episodeController, scanController)
+    fun mergeAnime(from: Long, to: Long, episodeController: EpisodeController, scanController: ScanController) =
+        mergeAnime(getAnime(from)!!, getAnime(to)!!, episodeController, scanController)
 }

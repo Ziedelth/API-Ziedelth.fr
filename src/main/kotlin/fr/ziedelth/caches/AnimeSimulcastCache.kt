@@ -3,6 +3,7 @@ package fr.ziedelth.caches
 import fr.ziedelth.controllers.SimulcastController
 import fr.ziedelth.models.Anime
 import fr.ziedelth.models.Episode
+import fr.ziedelth.models.Scan
 import fr.ziedelth.utils.ISO8601
 import fr.ziedelth.utils.Session
 import fr.ziedelth.utils.Simulcast
@@ -18,15 +19,25 @@ object AnimeSimulcastCache {
 
     private fun g(simulcastController: SimulcastController, country: String, simulcastId: Int): List<Anime>? {
         val session = Session.sessionFactory.openSession()
-        val list =
+        val _el =
             session?.createQuery("FROM Episode WHERE anime.country.tag = :tag ORDER BY anime.name", Episode::class.java)
+                ?.setParameter("tag", country)?.list()
+        val _sl =
+            session?.createQuery("FROM Scan WHERE anime.country.tag = :tag ORDER BY anime.name", Scan::class.java)
                 ?.setParameter("tag", country)?.list()
         session?.close()
 
         val simulcasts = simulcastController.getSimulcasts() ?: return null
         val getSimulcast = simulcasts.firstOrNull { it["id"] == simulcastId } ?: return null
-        return list?.filter { Simulcast.getSimulcast(ISO8601.fromUTCDate(it.releaseDate)) == getSimulcast["simulcast"] }
-            ?.mapNotNull { it.anime }?.toSet()?.toList() ?: return null
+
+        val _ael =
+            _el?.filter { Simulcast.getSimulcast(ISO8601.fromUTCDate(it.releaseDate)) == getSimulcast["simulcast"] }
+                ?.mapNotNull { it.anime }?.toSet()?.toList() ?: arrayListOf()
+        val _asl =
+            _sl?.filter { Simulcast.getSimulcast(ISO8601.fromUTCDate(it.releaseDate)) == getSimulcast["simulcast"] }
+                ?.mapNotNull { it.anime }?.toSet()?.toList() ?: arrayListOf()
+
+        return _ael.union(_asl).distinctBy { it.id }.sortedBy { it.name?.lowercase() }
     }
 
     fun get(simulcastController: SimulcastController, country: String, simulcastId: Int): List<Anime>? {

@@ -43,6 +43,7 @@ fun main() {
             scanRoute()
             statisticRoute()
             simulcastRoute()
+            memberRoute()
         }
 
         println("Init done. Listen on port 8081")
