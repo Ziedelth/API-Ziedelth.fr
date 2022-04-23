@@ -10,6 +10,7 @@ object AnimeCache {
         val session = Session.sessionFactory.openSession()
         val list = session?.createQuery("FROM Anime WHERE country.tag = :tag ORDER BY name", Anime::class.java)
             ?.setParameter("tag", country)?.list()
+        list?.forEach { it.url = it.name?.lowercase()?.filter { c -> c.isLetterOrDigit() || c.isWhitespace() }?.trim()?.replace("\\s+".toRegex(), "-")?.replace("--", "-") }
         session?.close()
         return list
     }

@@ -38,6 +38,9 @@ data class Anime(
     @Column(nullable = false, unique = true)
     val name: String? = null,
 
+    @Transient
+    var url: String? = null,
+
     @Column(nullable = false)
     var image: String? = null,
 
@@ -56,6 +59,6 @@ data class Anime(
 
     @Override
     override fun toString(): String {
-        return this::class.simpleName + "(id = $id , codes = $codes , country = $country , releaseDate = $releaseDate , name = $name , image = $image , description = $description )"
+        return this::class.simpleName + "(id = $id , codes = $codes , country = $country , releaseDate = $releaseDate , name = $name , url = $url , image = $image , description = $description )"
     }
 }

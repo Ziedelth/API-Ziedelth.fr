@@ -12,6 +12,8 @@ class AnimeController {
         return cache?.filter { it.name?.contains(search, true) == true }
     }
 
+    fun getAnimesByCountry(country: String) = AnimeCache.get(country)
+
     fun getAnimesByCountry(country: String, page: Int = 1, limit: Int = 9): List<Anime>? {
         val cache = AnimeCache.get(country)
         return cache?.subList(min(cache.size, (page - 1) * limit), min(cache.size, page * limit))
