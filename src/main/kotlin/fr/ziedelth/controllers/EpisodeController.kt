@@ -1,5 +1,6 @@
 package fr.ziedelth.controllers
 
+import fr.ziedelth.caches.AnimeCache
 import fr.ziedelth.caches.EpisodeAnimeCache
 import fr.ziedelth.models.Episode
 import fr.ziedelth.utils.Session
@@ -11,9 +12,10 @@ class EpisodeController {
             "FROM Episode WHERE anime.country.tag = :tag ORDER BY releaseDate DESC, anime.name, season DESC, number DESC, episodeType.id, langType.id, id DESC",
             Episode::class.java
         )?.setParameter("tag", country)?.setFirstResult((page - 1) * limit)?.setMaxResults(limit)?.list()
+        list?.forEach { AnimeCache.setUrl(it.anime) }
         session?.close()
         return list
     }
 
-    fun getEpisodesByAnime(animeId: Long) = EpisodeAnimeCache.get(animeId)
+    fun getEpisodesByAnime(animeUrl: String) = EpisodeAnimeCache.get(animeUrl)
 }

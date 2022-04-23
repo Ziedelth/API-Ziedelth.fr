@@ -7,6 +7,7 @@ import fr.ziedelth.utils.Session
 import kotlin.math.min
 
 class AnimeController {
+
     fun searchAnime(country: String, search: String): List<Anime>? {
         val cache = AnimeCache.get(country)
         return cache?.filter { it.name?.contains(search, true) == true }
@@ -60,7 +61,7 @@ class AnimeController {
         toGenres?.addAll(fromGenres?.filter { !toGenres.contains(it) } ?: listOf())
 
         // Change from anime id to anime id in episodes
-        from.id?.let {
+        from.url?.let {
             episodeController.getEpisodesByAnime(it)?.forEach { episode ->
                 episode.anime = to
                 session.saveOrUpdate(episode)
@@ -68,7 +69,7 @@ class AnimeController {
         }
 
         // Change from anime id to anime id in scans
-        from.id?.let {
+        from.url?.let {
             scanController.getScansByAnime(it)?.forEach { scan ->
                 scan.anime = to
                 session.saveOrUpdate(scan)

@@ -38,14 +38,14 @@ fun Route.scanRoute() {
             }
         }
 
-        get("/anime/{id}") {
+        get("/anime/{url}") {
             try {
-                val id = call.parameters["id"]?.toLongOrNull() ?: return@get call.respond(
+                val url = call.parameters["url"] ?: return@get call.respond(
                     HttpStatusCode.BadRequest,
-                    "Id must be an integer"
+                    "Url not found"
                 )
 
-                val scans = scanController.getScansByAnime(id) ?: return@get call.respond(
+                val scans = scanController.getScansByAnime(url) ?: return@get call.respond(
                     HttpStatusCode.NoContent,
                     "Episodes not found"
                 )

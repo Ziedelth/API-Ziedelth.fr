@@ -37,7 +37,9 @@ object AnimeSimulcastCache {
             _sl?.filter { Simulcast.getSimulcast(ISO8601.fromUTCDate(it.releaseDate)) == getSimulcast["simulcast"] }
                 ?.mapNotNull { it.anime }?.toSet()?.toList() ?: arrayListOf()
 
-        return _ael.union(_asl).distinctBy { it.id }.sortedBy { it.name?.lowercase() }
+        val animes = _ael.union(_asl).distinctBy { it.id }
+        AnimeCache.setUrl(animes)
+        return animes.sortedBy { it.name?.lowercase() }
     }
 
     fun get(simulcastController: SimulcastController, country: String, simulcastId: Int): List<Anime>? {

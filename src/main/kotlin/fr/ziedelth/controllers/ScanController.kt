@@ -1,5 +1,6 @@
 package fr.ziedelth.controllers
 
+import fr.ziedelth.caches.AnimeCache
 import fr.ziedelth.caches.ScanAnimeCache
 import fr.ziedelth.models.Scan
 import fr.ziedelth.utils.Session
@@ -11,9 +12,10 @@ class ScanController {
             "FROM Scan WHERE anime.country.tag = :tag ORDER BY releaseDate DESC, anime.name, number DESC, episodeType.id, langType.id, id DESC",
             Scan::class.java
         )?.setParameter("tag", country)?.setFirstResult((page - 1) * limit)?.setMaxResults(limit)?.list()
+        list?.forEach { AnimeCache.setUrl(it.anime) }
         session?.close()
         return list
     }
 
-    fun getScansByAnime(animeId: Long) = ScanAnimeCache.get(animeId)
+    fun getScansByAnime(animeUrl: String) = ScanAnimeCache.get(animeUrl)
 }

@@ -6,14 +6,35 @@ import fr.ziedelth.utils.Session
 object AnimeCache {
     private val cache = mutableMapOf<String, Cache<List<Anime>?>>()
 
+    fun setUrl(anime: Anime?) {
+        anime?.url = anime?.name?.lowercase()?.filter { c -> c.isLetterOrDigit() || c.isWhitespace() }?.trim()
+            ?.replace("\\s+".toRegex(), "-")?.replace("--", "-")
+    }
+
+    fun setUrl(list: Iterable<Anime>?) {
+        list?.forEach {
+            setUrl(it)
+        }
+    }
+
+    fun gAll(): List<Anime>? {
+        val session = Session.sessionFactory.openSession()
+        val list = session?.createQuery("FROM Anime ORDER BY name", Anime::class.java)
+            ?.list()
+        setUrl(list)
+        session?.close()
+        return list
+    }
+
     private fun g(country: String): List<Anime>? {
         val session = Session.sessionFactory.openSession()
         val list = session?.createQuery("FROM Anime WHERE country.tag = :tag ORDER BY name", Anime::class.java)
             ?.setParameter("tag", country)?.list()
-        list?.forEach { it.url = it.name?.lowercase()?.filter { c -> c.isLetterOrDigit() || c.isWhitespace() }?.trim()?.replace("\\s+".toRegex(), "-")?.replace("--", "-") }
+        setUrl(list)
         session?.close()
         return list
     }
+
 
     fun get(country: String): List<Anime>? {
         val has = this.cache.containsKey(country)
