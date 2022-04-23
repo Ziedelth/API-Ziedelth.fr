@@ -7,7 +7,7 @@ object AnimeCache {
     private val cache = mutableMapOf<String, Cache<List<Anime>?>>()
 
     fun setUrl(anime: Anime?) {
-        anime?.url = anime?.name?.lowercase()?.filter { c -> c.isLetterOrDigit() || c.isWhitespace() }?.trim()
+        anime?.url = anime?.name?.lowercase()?.filter { c -> c.isLetterOrDigit() || c.isWhitespace() || c == '-' }?.trim()
             ?.replace("\\s+".toRegex(), "-")?.replace("--", "-")
     }
 
