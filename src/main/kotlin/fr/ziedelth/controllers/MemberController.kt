@@ -166,7 +166,9 @@ class MemberController {
 
         // Save the member
         val session = Session.sessionFactory.openSession()
-        session.update(member)
+        val transaction = session.beginTransaction()
+        session.saveOrUpdate(member)
+        transaction.commit()
         session.close()
 
         return Pair(HttpStatusCode.OK, getInfo(member))
