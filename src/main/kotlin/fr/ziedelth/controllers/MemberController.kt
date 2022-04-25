@@ -141,7 +141,7 @@ class MemberController {
         return member
     }
 
-    private fun getInfo(member: Member) = mapOf("token" to member.token, "pseudo" to member.pseudo)
+    private fun getInfo(member: Member) = mapOf("token" to member.token, "pseudo" to member.pseudo, "watchlist" to member.watchlist?.map { it.id })
 
     fun loginWithCredentials(email: String, password: String): Pair<HttpStatusCode, Any> {
         // If email is not valid or not used, return false
