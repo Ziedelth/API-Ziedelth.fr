@@ -141,7 +141,9 @@ class MemberController {
         return member
     }
 
-    fun loginWithCredentials(email: String, password: String): Pair<HttpStatusCode, String> {
+    private fun getInfo(member: Member) = mapOf("token" to member.token, "pseudo" to member.pseudo)
+
+    fun loginWithCredentials(email: String, password: String): Pair<HttpStatusCode, Any> {
         // If email is not valid or not used, return false
         if (!isEmailValid(email) || !isEmailAlreadyUsed(email)) return Pair(
             HttpStatusCode.BadRequest,
@@ -167,10 +169,10 @@ class MemberController {
         session.update(member)
         session.close()
 
-        return Pair(HttpStatusCode.OK, mapOf("token" to member.token, "pseudo" to member.pseudo).toString())
+        return Pair(HttpStatusCode.OK, getInfo(member))
     }
 
-    fun loginWithToken(token: String): Pair<HttpStatusCode, String> {
+    fun loginWithToken(token: String): Pair<HttpStatusCode, Any> {
         // Get member
         val member = getMemberByToken(token) ?: return Pair(HttpStatusCode.NotFound, "Member not found")
 
@@ -180,6 +182,6 @@ class MemberController {
             "Member last login is more than 1 month ago"
         )
 
-        return Pair(HttpStatusCode.OK, mapOf("token" to member.token, "pseudo" to member.pseudo).toString())
+        return Pair(HttpStatusCode.OK, getInfo(member))
     }
 }
