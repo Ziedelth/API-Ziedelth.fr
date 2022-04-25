@@ -164,7 +164,7 @@ class MemberController {
 
         // Save the member
         val session = Session.sessionFactory.openSession()
-        session.save(member)
+        session.update(member)
         session.close()
 
         return Pair(HttpStatusCode.OK, mapOf("token" to member.token, "pseudo" to member.pseudo).toString())
