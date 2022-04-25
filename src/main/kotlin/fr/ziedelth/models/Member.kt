@@ -26,6 +26,12 @@ data class Member(
 
     @Column(name = "password", nullable = false)
     val password: String? = null,
+
+    @Column(name = "last_login", nullable = true)
+    var lastLogin: Calendar? = null,
+
+    @Column(name = "token", nullable = true, unique = true)
+    var token: String? = null,
 ) : Serializable {
     override fun equals(other: Any?): Boolean {
         if (this === other) return true

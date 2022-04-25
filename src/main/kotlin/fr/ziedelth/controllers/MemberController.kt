@@ -80,12 +80,32 @@ class MemberController {
         return sb.toString()
     }
 
-    private fun getMember(email: String): Member? {
+    private fun getMemberByEmail(email: String): Member? {
         val session = Session.sessionFactory.openSession()
         val member = session?.createQuery(
             "FROM Member WHERE email = :email",
             Member::class.java
         )?.setParameter("email", email)?.list()?.firstOrNull()
+        session?.close()
+        return member
+    }
+
+    private fun getMemberByToken(token: String): Member? {
+        val session = Session.sessionFactory.openSession()
+        val member = session?.createQuery(
+            "FROM Member WHERE token = :token",
+            Member::class.java
+        )?.setParameter("token", token)?.list()?.firstOrNull()
+        session?.close()
+        return member
+    }
+
+    fun getMemberByPseudo(pseudo: String): Member? {
+        val session = Session.sessionFactory.openSession()
+        val member = session?.createQuery(
+            "FROM Member WHERE pseudo = :pseudo",
+            Member::class.java
+        )?.setParameter("pseudo", pseudo)?.list()?.firstOrNull()
         session?.close()
         return member
     }
@@ -128,7 +148,7 @@ class MemberController {
             "Email is not valid or not used"
         )
         // Get member
-        val member = getMember(email) ?: return Pair(HttpStatusCode.NotFound, "Member not found")
+        val member = getMemberByEmail(email) ?: return Pair(HttpStatusCode.NotFound, "Member not found")
         // Get salt and random
         val split = member.password?.split("$")
         val salt = split?.get(0) ?: return Pair(HttpStatusCode.NoContent, "No salt")
@@ -138,6 +158,28 @@ class MemberController {
             HttpStatusCode.Unauthorized,
             "Wrong password"
         )
-        return Pair(HttpStatusCode.OK, "OK")
+
+        member.lastLogin = Calendar.getInstance()
+        member.token = UUID.randomUUID().toString()
+
+        // Save the member
+        val session = Session.sessionFactory.openSession()
+        session.save(member)
+        session.close()
+
+        return Pair(HttpStatusCode.OK, mapOf("token" to member.token, "pseudo" to member.pseudo).toString())
+    }
+
+    fun loginWithToken(token: String): Pair<HttpStatusCode, String> {
+        // Get member
+        val member = getMemberByToken(token) ?: return Pair(HttpStatusCode.NotFound, "Member not found")
+
+        // If member lastLogin is more than 1 month ago, return false
+        if ((member.lastLogin?.time?.time ?: 0) < Calendar.getInstance().time.time - 2592000000) return Pair(
+            HttpStatusCode.Unauthorized,
+            "Member last login is more than 1 month ago"
+        )
+
+        return Pair(HttpStatusCode.OK, mapOf("token" to member.token, "pseudo" to member.pseudo).toString())
     }
 }
