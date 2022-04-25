@@ -14,7 +14,7 @@ class WatchlistController {
         val list = session?.createQuery(
             "FROM Episode WHERE anime.id IN :watchlist ORDER BY releaseDate DESC, anime.name, season DESC, number DESC, episodeType.id, langType.id, id DESC",
             Episode::class.java
-        )?.setParameter("watchlist", member.animes?.map { it.id })?.setFirstResult((page - 1) * limit)?.setMaxResults(limit)?.list()
+        )?.setParameter("watchlist", member.watchlist?.map { it.id })?.setFirstResult((page - 1) * limit)?.setMaxResults(limit)?.list()
         list?.forEach { AnimeCache.setUrl(it.anime) }
         session?.close()
         return list
@@ -27,7 +27,7 @@ class WatchlistController {
         val list = session?.createQuery(
             "FROM Scan WHERE anime.id IN :watchlist ORDER BY releaseDate DESC, anime.name, number DESC, episodeType.id, langType.id, id DESC",
             Scan::class.java
-        )?.setParameter("watchlist", member.animes?.map { it.id })?.setFirstResult((page - 1) * limit)?.setMaxResults(limit)?.list()
+        )?.setParameter("watchlist", member.watchlist?.map { it.id })?.setFirstResult((page - 1) * limit)?.setMaxResults(limit)?.list()
         list?.forEach { AnimeCache.setUrl(it.anime) }
         session?.close()
         return list
@@ -39,7 +39,7 @@ class WatchlistController {
 
         val session = Session.sessionFactory.openSession()
         session?.beginTransaction()
-        member.animes?.add(anime)
+        member.watchlist?.add(anime)
         session?.saveOrUpdate(member)
         session?.transaction?.commit()
         session?.close()
@@ -53,7 +53,7 @@ class WatchlistController {
 
         val session = Session.sessionFactory.openSession()
         session?.beginTransaction()
-        member.animes?.remove(anime)
+        member.watchlist?.remove(anime)
         session?.saveOrUpdate(member)
         session?.transaction?.commit()
         session?.close()
