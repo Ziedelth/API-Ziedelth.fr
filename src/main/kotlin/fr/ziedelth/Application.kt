@@ -44,6 +44,7 @@ fun main() {
             statisticRoute()
             simulcastRoute()
             memberRoute()
+            watchlistRoute()
         }
 
         println("Init done. Listen on port 8081")

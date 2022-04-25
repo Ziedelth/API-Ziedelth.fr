@@ -1,6 +1,8 @@
 package fr.ziedelth.models
 
 import org.hibernate.Hibernate
+import org.hibernate.annotations.LazyCollection
+import org.hibernate.annotations.LazyCollectionOption
 import java.io.Serializable
 import java.util.*
 import javax.persistence.*
@@ -32,6 +34,15 @@ data class Member(
 
     @Column(name = "token", nullable = true, unique = true)
     var token: String? = null,
+
+    @OneToMany
+    @LazyCollection(LazyCollectionOption.FALSE)
+    @JoinTable(
+        name = "watchlist",
+        joinColumns = [JoinColumn(name = "member_id", referencedColumnName = "id")],
+        inverseJoinColumns = [JoinColumn(name = "anime_id", referencedColumnName = "id")]
+    )
+    var watchlist: MutableList<Anime>? = null,
 ) : Serializable {
     override fun equals(other: Any?): Boolean {
         if (this === other) return true
@@ -45,6 +56,6 @@ data class Member(
 
     @Override
     override fun toString(): String {
-        return this::class.simpleName + "(id = $id , timestamp = $timestamp , pseudo = $pseudo , email = $email , emailVerified = $emailVerified , password = $password )"
+        return this::class.simpleName + "(id = $id , timestamp = $timestamp , pseudo = $pseudo , email = $email , emailVerified = $emailVerified , password = $password , lastLogin = $lastLogin , token = $token )"
     }
 }

@@ -90,7 +90,7 @@ class MemberController {
         return member
     }
 
-    private fun getMemberByToken(token: String): Member? {
+    fun getMemberByToken(token: String): Member? {
         val session = Session.sessionFactory.openSession()
         val member = session?.createQuery(
             "FROM Member WHERE token = :token",

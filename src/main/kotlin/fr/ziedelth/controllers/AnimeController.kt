@@ -13,8 +13,6 @@ class AnimeController {
         return cache?.filter { it.name?.contains(search, true) == true }
     }
 
-    fun getAnimesByCountry(country: String) = AnimeCache.get(country)
-
     fun getAnimesByCountry(country: String, page: Int = 1, limit: Int = 9): List<Anime>? {
         val cache = AnimeCache.get(country)
         return cache?.subList(min(cache.size, (page - 1) * limit), min(cache.size, page * limit))
@@ -31,7 +29,7 @@ class AnimeController {
         return cache?.subList(min(cache.size, (page - 1) * limit), min(cache.size, page * limit))
     }
 
-    fun getAnime(id: Long): Anime? {
+    fun getAnimeById(id: Long): Anime? {
         val session = Session.sessionFactory.openSession()
         val anime = session?.createQuery(
             "FROM Anime WHERE id = :animeId",
@@ -41,7 +39,7 @@ class AnimeController {
         return anime
     }
 
-    fun mergeAnime(from: Anime, to: Anime, episodeController: EpisodeController, scanController: ScanController) {
+    private fun mergeAnime(from: Anime, to: Anime, episodeController: EpisodeController, scanController: ScanController) {
         val session = Session.sessionFactory.openSession()
         val transaction = session.beginTransaction()
 
@@ -84,5 +82,5 @@ class AnimeController {
     }
 
     fun mergeAnime(from: Long, to: Long, episodeController: EpisodeController, scanController: ScanController) =
-        mergeAnime(getAnime(from)!!, getAnime(to)!!, episodeController, scanController)
+        mergeAnime(getAnimeById(from)!!, getAnimeById(to)!!, episodeController, scanController)
 }
