@@ -7,12 +7,10 @@ import io.ktor.server.response.*
 import io.ktor.server.routing.*
 
 fun Route.platformRoute() {
-    val platformController = PlatformController()
-
     route("/v1/platforms") {
         get {
             try {
-                val platforms = platformController.getPlatforms() ?: return@get call.respond(
+                val platforms = PlatformController.getPlatforms() ?: return@get call.respond(
                     HttpStatusCode.NoContent,
                     "Platforms not found"
                 )

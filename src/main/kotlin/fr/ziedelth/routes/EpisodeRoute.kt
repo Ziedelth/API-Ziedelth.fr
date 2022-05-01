@@ -1,14 +1,15 @@
 package fr.ziedelth.routes
 
 import fr.ziedelth.controllers.EpisodeController
+import fr.ziedelth.controllers.MemberController
+import fr.ziedelth.models.Episode
 import io.ktor.http.*
 import io.ktor.server.application.*
+import io.ktor.server.request.*
 import io.ktor.server.response.*
 import io.ktor.server.routing.*
 
 fun Route.episodeRoute() {
-    val episodeController = EpisodeController()
-
     route("/v1/episodes") {
         get("/country/{tag}/page/{page}/limit/{limit}") {
             try {
@@ -27,7 +28,7 @@ fun Route.episodeRoute() {
                     "Limit must be an integer"
                 )
 
-                val episodes = episodeController.getEpisodes(tag, page, limit) ?: return@get call.respond(
+                val episodes = EpisodeController.getEpisodes(tag, page, limit) ?: return@get call.respond(
                     HttpStatusCode.NoContent,
                     "Episodes not found"
                 )
@@ -45,12 +46,39 @@ fun Route.episodeRoute() {
                     "Url not found"
                 )
 
-                val episodes = episodeController.getEpisodesByAnime(url) ?: return@get call.respond(
+                val episodes = EpisodeController.getEpisodesByAnime(url) ?: return@get call.respond(
                     HttpStatusCode.NoContent,
                     "Episodes not found"
                 )
 
                 call.respond(episodes)
+            } catch (e: Exception) {
+                e.message?.let { call.respond(HttpStatusCode.InternalServerError, it) }
+            }
+        }
+
+        put("/update") {
+            try {
+                val token = call.request.headers["Authorization"] ?: return@put call.respond(
+                    HttpStatusCode.BadRequest,
+                    "Token not found"
+                )
+
+                val member = MemberController.getMemberByToken(token) ?: return@put call.respond(
+                    HttpStatusCode.BadRequest,
+                    "Member not found"
+                )
+
+                if (member.role != 100) {
+                    return@put call.respond(
+                        HttpStatusCode.Forbidden,
+                        "You don't have the permission to do that"
+                    )
+                }
+
+                val episode = call.receive<Episode>()
+                EpisodeController.updateEpisode(episode)
+                call.respond(HttpStatusCode.OK, "Updated")
             } catch (e: Exception) {
                 e.message?.let { call.respond(HttpStatusCode.InternalServerError, it) }
             }

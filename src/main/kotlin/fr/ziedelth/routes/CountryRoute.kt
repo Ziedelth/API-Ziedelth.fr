@@ -7,12 +7,10 @@ import io.ktor.server.response.*
 import io.ktor.server.routing.*
 
 fun Route.countryRoute() {
-    val countryController = CountryController()
-
     route("/v1/countries") {
         get {
             try {
-                val countries = countryController.getCountries() ?: return@get call.respond(
+                val countries = CountryController.getCountries() ?: return@get call.respond(
                     HttpStatusCode.NoContent,
                     "Countries not found"
                 )

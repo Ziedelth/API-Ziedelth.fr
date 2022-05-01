@@ -41,7 +41,6 @@ fun main() {
             animeRoute()
             episodeRoute()
             scanRoute()
-            statisticRoute()
             simulcastRoute()
             memberRoute()
             watchlistRoute()

@@ -9,13 +9,13 @@ object SimulcastCache {
 
     private fun g(): List<Map<String, Any>> {
         val session = Session.sessionFactory.openSession()
-        val _el =
+        val el =
             session?.createQuery(
                 "SELECT DISTINCT releaseDate FROM Episode ORDER BY releaseDate ASC",
                 String::class.java
             )
                 ?.list()?.toSet()
-        val _sl =
+        val sl =
             session?.createQuery(
                 "SELECT DISTINCT releaseDate FROM Scan ORDER BY releaseDate ASC",
                 String::class.java
@@ -25,8 +25,8 @@ object SimulcastCache {
 
         // Create a list with all elements of _el and _sl
         val list = mutableListOf<String>()
-        _el?.let { list.addAll(it) }
-        _sl?.let { list.addAll(it) }
+        el?.let { list.addAll(it) }
+        sl?.let { list.addAll(it) }
 
         return list.distinct().mapNotNull { Simulcast.getSimulcast(ISO8601.fromUTCDate(it)) }.toSet()
             .mapIndexed { index, simulcast -> mapOf("id" to index + 1, "simulcast" to simulcast) }

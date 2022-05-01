@@ -1,6 +1,7 @@
 package fr.ziedelth.routes
 
 import fr.ziedelth.controllers.MemberController
+import fr.ziedelth.controllers.MemberController.withoutSensitiveInformation
 import io.ktor.http.*
 import io.ktor.server.application.*
 import io.ktor.server.request.*
@@ -8,17 +9,14 @@ import io.ktor.server.response.*
 import io.ktor.server.routing.*
 
 fun Route.memberRoute() {
-    val memberController = MemberController()
-
     route("/v1/member") {
         route("/{pseudo}") {
             get {
                 try {
                     val pseudo = call.parameters["pseudo"] ?: throw IllegalArgumentException("Pseudo is missing")
-                    val member = memberController.getMemberByPseudo(pseudo) ?: return@get call.respond(HttpStatusCode.NotFound)
-                    // Create a new member without password
-                    val memberWithoutPassword = member.copy(email = null, emailVerified = null, password = null, lastLogin = null, token = null)
-                    call.respond(memberWithoutPassword)
+                    val member =
+                        MemberController.getMemberByPseudo(pseudo) ?: return@get call.respond(HttpStatusCode.NotFound)
+                    call.respond(member.withoutSensitiveInformation())
                 } catch (e: Exception) {
                     e.message?.let { call.respond(HttpStatusCode.InternalServerError, it) }
                 }
@@ -37,7 +35,7 @@ fun Route.memberRoute() {
                     val password = formParameters["password"] ?: throw IllegalArgumentException("Password is missing")
 
                     // Register member
-                    memberController.register(pseudo, email, password) ?: return@post call.respond(
+                    MemberController.register(pseudo, email, password) ?: return@post call.respond(
                         HttpStatusCode.BadRequest,
                         "Member already exists"
                     )
@@ -60,7 +58,7 @@ fun Route.memberRoute() {
                     val password = formParameters["password"] ?: throw IllegalArgumentException("Password is missing")
 
                     // Login member
-                    val pair = memberController.loginWithCredentials(email, password)
+                    val pair = MemberController.loginWithCredentials(email, password)
                     call.respond(pair.first, pair.second)
                 } catch (e: Exception) {
                     e.message?.let { call.respond(HttpStatusCode.InternalServerError, it) }
@@ -76,7 +74,7 @@ fun Route.memberRoute() {
                     val token = formParameters["token"] ?: throw IllegalArgumentException("Token is missing")
 
                     // Login member
-                    val pair = memberController.loginWithToken(token)
+                    val pair = MemberController.loginWithToken(token)
                     call.respond(pair.first, pair.second)
                 } catch (e: Exception) {
                     e.message?.let { call.respond(HttpStatusCode.InternalServerError, it) }

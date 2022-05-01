@@ -6,26 +6,20 @@ import fr.ziedelth.models.Anime
 import fr.ziedelth.utils.Session
 import kotlin.math.min
 
-class AnimeController {
+object AnimeController {
 
     fun searchAnime(country: String, search: String): List<Anime>? {
         val cache = AnimeCache.get(country)
         return cache?.filter { it.name?.contains(search, true) == true }
     }
 
-    fun getAnimesByCountry(country: String, page: Int = 1, limit: Int = 9): List<Anime>? {
-        val cache = AnimeCache.get(country)
-        return cache?.subList(min(cache.size, (page - 1) * limit), min(cache.size, page * limit))
-    }
-
     fun getAnimesBySimulcast(
         country: String,
-        simulcastController: SimulcastController,
         simulcastId: Int,
         page: Int = 1,
         limit: Int = 9
     ): List<Anime>? {
-        val cache = AnimeSimulcastCache.get(simulcastController, country, simulcastId)
+        val cache = AnimeSimulcastCache.get(country, simulcastId)
         return cache?.subList(min(cache.size, (page - 1) * limit), min(cache.size, page * limit))
     }
 
@@ -39,7 +33,7 @@ class AnimeController {
         return anime
     }
 
-    private fun mergeAnime(from: Anime, to: Anime, episodeController: EpisodeController, scanController: ScanController) {
+    private fun mergeAnime(from: Anime, to: Anime) {
         val session = Session.sessionFactory.openSession()
         val transaction = session.beginTransaction()
 
@@ -60,7 +54,7 @@ class AnimeController {
 
         // Change from anime id to anime id in episodes
         from.url?.let {
-            episodeController.getEpisodesByAnime(it)?.forEach { episode ->
+            EpisodeController.getEpisodesByAnime(it)?.forEach { episode ->
                 episode.anime = to
                 session.saveOrUpdate(episode)
             }
@@ -68,7 +62,7 @@ class AnimeController {
 
         // Change from anime id to anime id in scans
         from.url?.let {
-            scanController.getScansByAnime(it)?.forEach { scan ->
+            ScanController.getScansByAnime(it)?.forEach { scan ->
                 scan.anime = to
                 session.saveOrUpdate(scan)
             }
@@ -81,6 +75,15 @@ class AnimeController {
         session.close()
     }
 
-    fun mergeAnime(from: Long, to: Long, episodeController: EpisodeController, scanController: ScanController) =
-        mergeAnime(getAnimeById(from)!!, getAnimeById(to)!!, episodeController, scanController)
+    fun mergeAnime(from: Long, to: Long) =
+        mergeAnime(getAnimeById(from)!!, getAnimeById(to)!!)
+
+    // Update anime
+    fun updateAnime(anime: Anime) {
+        val session = Session.sessionFactory.openSession()
+        session.beginTransaction()
+        session.saveOrUpdate(anime)
+        session.flush()
+        session.close()
+    }
 }

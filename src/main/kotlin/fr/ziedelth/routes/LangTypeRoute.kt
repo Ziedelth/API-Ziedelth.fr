@@ -7,12 +7,10 @@ import io.ktor.server.response.*
 import io.ktor.server.routing.*
 
 fun Route.langTypeRoute() {
-    val langTypeController = LangTypeController()
-
     route("/v1/lang-types") {
         get {
             try {
-                val langTypes = langTypeController.getLangTypes() ?: return@get call.respond(
+                val langTypes = LangTypeController.getLangTypes() ?: return@get call.respond(
                     HttpStatusCode.NoContent,
                     "Lang types not found"
                 )

@@ -1,14 +1,15 @@
 package fr.ziedelth.routes
 
+import fr.ziedelth.controllers.MemberController
 import fr.ziedelth.controllers.ScanController
+import fr.ziedelth.models.Scan
 import io.ktor.http.*
 import io.ktor.server.application.*
+import io.ktor.server.request.*
 import io.ktor.server.response.*
 import io.ktor.server.routing.*
 
 fun Route.scanRoute() {
-    val scanController = ScanController()
-
     route("/v1/scans") {
         get("/country/{tag}/page/{page}/limit/{limit}") {
             try {
@@ -27,7 +28,7 @@ fun Route.scanRoute() {
                     "Limit must be an integer"
                 )
 
-                val scans = scanController.getScans(tag, page, limit) ?: return@get call.respond(
+                val scans = ScanController.getScans(tag, page, limit) ?: return@get call.respond(
                     HttpStatusCode.NoContent,
                     "Scans not found"
                 )
@@ -45,12 +46,39 @@ fun Route.scanRoute() {
                     "Url not found"
                 )
 
-                val scans = scanController.getScansByAnime(url) ?: return@get call.respond(
+                val scans = ScanController.getScansByAnime(url) ?: return@get call.respond(
                     HttpStatusCode.NoContent,
                     "Episodes not found"
                 )
 
                 call.respond(scans)
+            } catch (e: Exception) {
+                e.message?.let { call.respond(HttpStatusCode.InternalServerError, it) }
+            }
+        }
+
+        put("/update") {
+            try {
+                val token = call.request.headers["Authorization"] ?: return@put call.respond(
+                    HttpStatusCode.BadRequest,
+                    "Token not found"
+                )
+
+                val member = MemberController.getMemberByToken(token) ?: return@put call.respond(
+                    HttpStatusCode.BadRequest,
+                    "Member not found"
+                )
+
+                if (member.role != 100) {
+                    return@put call.respond(
+                        HttpStatusCode.Forbidden,
+                        "You don't have the permission to do that"
+                    )
+                }
+
+                val scan = call.receive<Scan>()
+                ScanController.updateScan(scan)
+                call.respond(HttpStatusCode.OK, "Updated")
             } catch (e: Exception) {
                 e.message?.let { call.respond(HttpStatusCode.InternalServerError, it) }
             }

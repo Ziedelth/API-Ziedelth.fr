@@ -6,7 +6,7 @@ import io.ktor.http.*
 import java.security.MessageDigest
 import java.util.*
 
-class MemberController {
+object MemberController {
     // Create regex with minimum length of 4 characters and maximum length of 16 characters, with only letters and numbers
     private val pseudoRegex = Regex("^[a-zA-Z\\d]{4,16}$")
 
@@ -141,7 +141,14 @@ class MemberController {
         return member
     }
 
-    private fun getInfo(member: Member) = mapOf("token" to member.token, "pseudo" to member.pseudo, "watchlist" to member.watchlist?.map { it.id })
+    fun Member.withoutSensitiveInformation(token: Boolean = false) = this.copy(
+        timestamp = null,
+        email = null,
+        emailVerified = null,
+        password = null,
+        lastLogin = null,
+        token = if (token) this.token else null
+    )
 
     fun loginWithCredentials(email: String, password: String): Pair<HttpStatusCode, Any> {
         // If email is not valid or not used, return false
@@ -171,7 +178,7 @@ class MemberController {
         transaction.commit()
         session.close()
 
-        return Pair(HttpStatusCode.OK, getInfo(member))
+        return Pair(HttpStatusCode.OK, member.withoutSensitiveInformation(true))
     }
 
     fun loginWithToken(token: String): Pair<HttpStatusCode, Any> {
@@ -184,6 +191,6 @@ class MemberController {
             "Member last login is more than 1 month ago"
         )
 
-        return Pair(HttpStatusCode.OK, getInfo(member))
+        return Pair(HttpStatusCode.OK, member.withoutSensitiveInformation(true))
     }
 }

@@ -5,7 +5,7 @@ import fr.ziedelth.caches.EpisodeAnimeCache
 import fr.ziedelth.models.Episode
 import fr.ziedelth.utils.Session
 
-class EpisodeController {
+object EpisodeController {
     fun getEpisodes(country: String, page: Int = 1, limit: Int = 9): List<Episode>? {
         val session = Session.sessionFactory.openSession()
         val list = session?.createQuery(
@@ -18,4 +18,13 @@ class EpisodeController {
     }
 
     fun getEpisodesByAnime(animeUrl: String) = EpisodeAnimeCache.get(animeUrl)
+
+    // Update episode
+    fun updateEpisode(episode: Episode) {
+        val session = Session.sessionFactory.openSession()
+        session.beginTransaction()
+        session.saveOrUpdate(episode)
+        session.flush()
+        session.close()
+    }
 }

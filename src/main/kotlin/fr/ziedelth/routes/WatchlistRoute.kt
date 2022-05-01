@@ -8,8 +8,6 @@ import io.ktor.server.response.*
 import io.ktor.server.routing.*
 
 fun Route.watchlistRoute() {
-    val watchlistController = WatchlistController()
-
     route("/v1/watchlist") {
         route("/episodes/member/{pseudo}/page/{page}/limit/{limit}") {
             get {
@@ -29,10 +27,11 @@ fun Route.watchlistRoute() {
                         "Limit must be an integer"
                     )
 
-                    val watchlist = watchlistController.getWatchlistEpisodes(pseudo, page, limit) ?: return@get call.respond(
-                        HttpStatusCode.NoContent,
-                        "Episodes not found"
-                    )
+                    val watchlist =
+                        WatchlistController.getWatchlistEpisodes(pseudo, page, limit) ?: return@get call.respond(
+                            HttpStatusCode.NoContent,
+                            "Episodes not found"
+                        )
 
                     call.respond(watchlist)
                 } catch (e: Exception) {
@@ -59,10 +58,11 @@ fun Route.watchlistRoute() {
                         "Limit must be an integer"
                     )
 
-                    val watchlist = watchlistController.getWatchlistScans(pseudo, page, limit) ?: return@get call.respond(
-                        HttpStatusCode.NoContent,
-                        "Scans not found"
-                    )
+                    val watchlist =
+                        WatchlistController.getWatchlistScans(pseudo, page, limit) ?: return@get call.respond(
+                            HttpStatusCode.NoContent,
+                            "Scans not found"
+                        )
 
                     call.respond(watchlist)
                 } catch (e: Exception) {
@@ -78,8 +78,9 @@ fun Route.watchlistRoute() {
                     // Get received token
                     val token = formParameters["token"] ?: throw IllegalArgumentException("Token is missing")
                     // Get received anime id
-                    val animeId = formParameters["animeId"]?.toLongOrNull() ?: throw IllegalArgumentException("Anime id is missing")
-                    call.respond(watchlistController.addToWatchlist(token, animeId))
+                    val animeId = formParameters["animeId"]?.toLongOrNull()
+                        ?: throw IllegalArgumentException("Anime id is missing")
+                    call.respond(WatchlistController.addToWatchlist(token, animeId))
                 } catch (e: Exception) {
                     e.message?.let { call.respond(HttpStatusCode.InternalServerError, it) }
                 }
@@ -93,8 +94,9 @@ fun Route.watchlistRoute() {
                     // Get received token
                     val token = formParameters["token"] ?: throw IllegalArgumentException("Token is missing")
                     // Get received anime id
-                    val animeId = formParameters["animeId"]?.toLongOrNull() ?: throw IllegalArgumentException("Anime id is missing")
-                    call.respond(watchlistController.removeToWatchlist(token, animeId))
+                    val animeId = formParameters["animeId"]?.toLongOrNull()
+                        ?: throw IllegalArgumentException("Anime id is missing")
+                    call.respond(WatchlistController.removeToWatchlist(token, animeId))
                 } catch (e: Exception) {
                     e.message?.let { call.respond(HttpStatusCode.InternalServerError, it) }
                 }

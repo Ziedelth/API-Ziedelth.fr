@@ -7,11 +7,9 @@ import io.ktor.server.response.*
 import io.ktor.server.routing.*
 
 fun Route.simulcastRoute() {
-    val simulcastController = SimulcastController()
-
     route("/v1/simulcasts") {
         get {
-            val simulcasts = simulcastController.getSimulcasts() ?: return@get call.respond(
+            val simulcasts = SimulcastController.getSimulcasts() ?: return@get call.respond(
                 HttpStatusCode.NoContent,
                 "Simulcasts not found"
             )

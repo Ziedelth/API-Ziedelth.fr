@@ -17,32 +17,32 @@ object AnimeSimulcastCache {
         simulcastId: Int
     ) = it.key.first == country && it.key.second == simulcastId
 
-    private fun g(simulcastController: SimulcastController, country: String, simulcastId: Int): List<Anime>? {
+    private fun g(country: String, simulcastId: Int): List<Anime>? {
         val session = Session.sessionFactory.openSession()
-        val _el =
+        val el =
             session?.createQuery("FROM Episode WHERE anime.country.tag = :tag ORDER BY anime.name", Episode::class.java)
                 ?.setParameter("tag", country)?.list()
-        val _sl =
+        val sl =
             session?.createQuery("FROM Scan WHERE anime.country.tag = :tag ORDER BY anime.name", Scan::class.java)
                 ?.setParameter("tag", country)?.list()
         session?.close()
 
-        val simulcasts = simulcastController.getSimulcasts() ?: return null
+        val simulcasts = SimulcastController.getSimulcasts() ?: return null
         val getSimulcast = simulcasts.firstOrNull { it["id"] == simulcastId } ?: return null
 
-        val _ael =
-            _el?.filter { Simulcast.getSimulcast(ISO8601.fromUTCDate(it.releaseDate)) == getSimulcast["simulcast"] }
+        val ael =
+            el?.filter { Simulcast.getSimulcast(ISO8601.fromUTCDate(it.releaseDate)) == getSimulcast["simulcast"] }
                 ?.mapNotNull { it.anime }?.toSet()?.toList() ?: arrayListOf()
-        val _asl =
-            _sl?.filter { Simulcast.getSimulcast(ISO8601.fromUTCDate(it.releaseDate)) == getSimulcast["simulcast"] }
+        val asl =
+            sl?.filter { Simulcast.getSimulcast(ISO8601.fromUTCDate(it.releaseDate)) == getSimulcast["simulcast"] }
                 ?.mapNotNull { it.anime }?.toSet()?.toList() ?: arrayListOf()
 
-        val animes = _ael.union(_asl).distinctBy { it.id }
+        val animes = ael.union(asl).distinctBy { it.id }
         AnimeCache.setUrl(animes)
         return animes.sortedBy { it.name?.lowercase() }
     }
 
-    fun get(simulcastController: SimulcastController, country: String, simulcastId: Int): List<Anime>? {
+    fun get(country: String, simulcastId: Int): List<Anime>? {
         // If the cache in key contains the country and the simulcast id
         val has = this.cache.any { b(it, country, simulcastId) }
 
@@ -55,14 +55,14 @@ object AnimeSimulcastCache {
             if (!cache.hasExpired()) return cache.value
 
             cache.lastCheck = System.currentTimeMillis()
-            cache.value = g(simulcastController, country, simulcastId)
+            cache.value = g(country, simulcastId)
             // Replace the cache
             this.cache.replace(key, cache)
             return cache.value
         }
 
         val key = Pair(country, simulcastId)
-        val cache = Cache(System.currentTimeMillis(), g(simulcastController, country, simulcastId))
+        val cache = Cache(System.currentTimeMillis(), g(country, simulcastId))
         this.cache[key] = cache
         return cache.value
     }

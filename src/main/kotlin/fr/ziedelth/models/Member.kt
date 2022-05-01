@@ -35,6 +35,9 @@ data class Member(
     @Column(name = "token", nullable = true, unique = true)
     var token: String? = null,
 
+    @Column(name = "role", nullable = false)
+    var role: Int = 0,
+
     @OneToMany
     @LazyCollection(LazyCollectionOption.FALSE)
     @JoinTable(

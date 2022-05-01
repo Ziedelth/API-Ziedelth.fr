@@ -7,12 +7,10 @@ import io.ktor.server.response.*
 import io.ktor.server.routing.*
 
 fun Route.genreRoute() {
-    val genreController = GenreController()
-
     route("/v1/genres") {
         get {
             try {
-                val genres = genreController.getGenres() ?: return@get call.respond(
+                val genres = GenreController.getGenres() ?: return@get call.respond(
                     HttpStatusCode.NoContent,
                     "Genres not found"
                 )
