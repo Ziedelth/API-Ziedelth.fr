@@ -1,11 +1,11 @@
 package fr.ziedelth.models
 
+import jakarta.persistence.*
 import org.hibernate.Hibernate
 import org.hibernate.annotations.LazyCollection
 import org.hibernate.annotations.LazyCollectionOption
 import java.io.Serializable
 import java.util.*
-import javax.persistence.*
 
 @Entity
 @Table(name = "members")

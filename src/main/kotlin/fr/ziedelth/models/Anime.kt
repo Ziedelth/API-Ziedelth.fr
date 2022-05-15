@@ -1,10 +1,10 @@
 package fr.ziedelth.models
 
+import jakarta.persistence.*
 import org.hibernate.Hibernate
 import org.hibernate.annotations.LazyCollection
 import org.hibernate.annotations.LazyCollectionOption
 import java.io.Serializable
-import javax.persistence.*
 
 @Entity
 @Table(name = "animes")
@@ -19,7 +19,7 @@ data class Anime(
     @Column(name = "code", nullable = false)
     var codes: MutableList<String>? = null,
 
-    @OneToMany
+    @OneToMany()
     @LazyCollection(LazyCollectionOption.FALSE)
     @JoinTable(
         name = "anime_genres",
