@@ -1,5 +1,6 @@
 package fr.ziedelth.routes
 
+import com.google.gson.Gson
 import fr.ziedelth.controllers.EpisodeController
 import fr.ziedelth.controllers.MemberController
 import fr.ziedelth.models.Episode
@@ -80,9 +81,9 @@ fun Route.episodeRoute() {
                 }
 
                 println("Updating episode")
-                println("Body: ${call.receiveText()}")
-                val episode = call.receive<Episode>()
-                println("Episode: $episode")
+                val text = call.receiveText()
+                println("Body: $text")
+                val episode = Gson().fromJson(text, Episode::class.java)
                 EpisodeController.updateEpisode(episode)
                 call.respond(HttpStatusCode.OK, "Updated")
                 println("Episode updated")
