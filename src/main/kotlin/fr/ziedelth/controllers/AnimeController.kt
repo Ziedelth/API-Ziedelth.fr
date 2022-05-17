@@ -56,7 +56,7 @@ object AnimeController {
         from.url?.let {
             EpisodeController.getEpisodesByAnime(it)?.forEach { episode ->
                 episode.anime = to
-                session.saveOrUpdate(episode)
+                session.persist(episode)
             }
         }
 
@@ -64,12 +64,12 @@ object AnimeController {
         from.url?.let {
             ScanController.getScansByAnime(it)?.forEach { scan ->
                 scan.anime = to
-                session.saveOrUpdate(scan)
+                session.persist(scan)
             }
         }
 
-        session.saveOrUpdate(to)
-        session.delete(from)
+        session.persist(to)
+        session.remove(from)
 
         transaction.commit()
         session.close()
@@ -82,7 +82,7 @@ object AnimeController {
     fun updateAnime(anime: Anime) {
         val session = Session.sessionFactory.openSession()
         session.beginTransaction()
-        session.saveOrUpdate(anime)
+        session.persist(anime)
         session.flush()
         session.close()
     }

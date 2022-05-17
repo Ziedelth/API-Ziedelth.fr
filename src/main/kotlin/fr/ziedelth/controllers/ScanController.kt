@@ -23,7 +23,7 @@ object ScanController {
     fun updateScan(scan: Scan) {
         val session = Session.sessionFactory.openSession()
         session.beginTransaction()
-        session.saveOrUpdate(scan)
+        session.persist(scan)
         session.flush()
         session.close()
     }
