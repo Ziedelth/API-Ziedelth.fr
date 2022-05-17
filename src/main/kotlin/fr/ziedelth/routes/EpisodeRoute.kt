@@ -79,6 +79,8 @@ fun Route.episodeRoute() {
                     )
                 }
 
+                println("Updating episode")
+                println("Body: ${call.receiveText()}")
                 val episode = call.receive<Episode>()
                 println("Episode: $episode")
                 EpisodeController.updateEpisode(episode)
