@@ -60,19 +60,16 @@ fun Route.episodeRoute() {
 
         put("/update") {
             try {
-                println("A request to update episodes has been received")
                 val token = call.request.headers["Authorization"] ?: return@put call.respond(
                     HttpStatusCode.BadRequest,
                     "Token not found"
                 )
 
-                println("Token: $token")
                 val member = MemberController.getMemberByToken(token) ?: return@put call.respond(
                     HttpStatusCode.BadRequest,
                     "Member not found"
                 )
 
-                println("Member role: ${member.role}")
                 if (member.role != 100) {
                     return@put call.respond(
                         HttpStatusCode.Forbidden,
@@ -80,15 +77,11 @@ fun Route.episodeRoute() {
                     )
                 }
 
-                println("Updating episode")
                 val text = call.receiveText()
-                println("Body: $text")
                 val episode = Gson().fromJson(text, Episode::class.java)
                 EpisodeController.updateEpisode(episode)
                 call.respond(HttpStatusCode.OK, "Updated")
-                println("Episode updated")
             } catch (e: Exception) {
-                println("Error: ${e.message}")
                 e.message?.let { call.respond(HttpStatusCode.InternalServerError, it) }
             }
         }

@@ -1,5 +1,6 @@
 package fr.ziedelth.routes
 
+import com.google.gson.Gson
 import fr.ziedelth.controllers.MemberController
 import fr.ziedelth.controllers.ScanController
 import fr.ziedelth.models.Scan
@@ -76,7 +77,8 @@ fun Route.scanRoute() {
                     )
                 }
 
-                val scan = call.receive<Scan>()
+                val text = call.receiveText()
+                val scan = Gson().fromJson(text, Scan::class.java)
                 ScanController.updateScan(scan)
                 call.respond(HttpStatusCode.OK, "Updated")
             } catch (e: Exception) {

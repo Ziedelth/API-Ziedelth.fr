@@ -1,5 +1,6 @@
 package fr.ziedelth.routes
 
+import com.google.gson.Gson
 import fr.ziedelth.controllers.AnimeController
 import fr.ziedelth.controllers.MemberController
 import fr.ziedelth.models.Anime
@@ -127,8 +128,8 @@ fun Route.animeRoute() {
                     )
                 }
 
-                // Get anime
-                val anime = call.receive<Anime>()
+                val text = call.receiveText()
+                val anime = Gson().fromJson(text, Anime::class.java)
                 AnimeController.updateAnime(anime)
                 call.respond(HttpStatusCode.OK, "Updated")
             } catch (e: Exception) {
