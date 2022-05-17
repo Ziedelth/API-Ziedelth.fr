@@ -42,7 +42,7 @@ object WatchlistController {
         val session = Session.sessionFactory.openSession()
         session?.beginTransaction()
         member.watchlist?.add(anime)
-        session?.persist(member)
+        session?.saveOrUpdate(member)
         session?.transaction?.commit()
         session?.close()
 
@@ -56,7 +56,7 @@ object WatchlistController {
         val session = Session.sessionFactory.openSession()
         session?.beginTransaction()
         member.watchlist?.remove(anime)
-        session?.persist(member)
+        session?.saveOrUpdate(member)
         session?.transaction?.commit()
         session?.close()
 

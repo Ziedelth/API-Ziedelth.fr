@@ -23,7 +23,7 @@ object EpisodeController {
     fun updateEpisode(episode: Episode) {
         val session = Session.sessionFactory.openSession()
         session.beginTransaction()
-        session.persist(episode)
+        session.update(episode)
         session.flush()
         session.close()
     }

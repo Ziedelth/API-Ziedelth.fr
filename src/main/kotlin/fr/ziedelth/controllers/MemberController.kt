@@ -136,7 +136,7 @@ object MemberController {
         val member = Member(null, Calendar.getInstance(), pseudo, email, false, "$salt$$random$$passwordHash")
         // Save member
         val session = Session.sessionFactory.openSession()
-        session.persist(member)
+        session.save(member)
         session.close()
         return member
     }
@@ -174,7 +174,7 @@ object MemberController {
         // Save the member
         val session = Session.sessionFactory.openSession()
         val transaction = session.beginTransaction()
-        session.persist(member)
+        session.update(member)
         transaction.commit()
         session.close()
 
