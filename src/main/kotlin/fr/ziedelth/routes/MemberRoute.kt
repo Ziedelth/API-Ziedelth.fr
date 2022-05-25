@@ -2,6 +2,7 @@ package fr.ziedelth.routes
 
 import fr.ziedelth.controllers.MemberController
 import fr.ziedelth.controllers.MemberController.withoutSensitiveInformation
+import fr.ziedelth.utils.toBrotly
 import io.ktor.http.*
 import io.ktor.server.application.*
 import io.ktor.server.request.*
@@ -75,6 +76,55 @@ fun Route.memberRoute() {
 
                     // Login member
                     val pair = MemberController.loginWithToken(token)
+                    call.respond(pair.first, pair.second)
+                } catch (e: Exception) {
+                    e.message?.let { call.respond(HttpStatusCode.InternalServerError, it) }
+                }
+            }
+        }
+    }
+
+    route("/v2/member") {
+        route("/{pseudo}") {
+            get {
+                try {
+                    val pseudo = call.parameters["pseudo"] ?: throw IllegalArgumentException("Pseudo is missing")
+                    val member =
+                        MemberController.getMemberByPseudo(pseudo) ?: return@get call.respond(HttpStatusCode.NotFound)
+                    call.respond(member.withoutSensitiveInformation().toBrotly())
+                } catch (e: Exception) {
+                    e.message?.let { call.respond(HttpStatusCode.InternalServerError, it) }
+                }
+            }
+        }
+
+        route("/login") {
+            post {
+                try {
+                    val formParameters = call.receiveParameters()
+                    // Get received email
+                    val email = formParameters["email"] ?: throw IllegalArgumentException("Email is missing")
+                    // Get received password
+                    val password = formParameters["password"] ?: throw IllegalArgumentException("Password is missing")
+
+                    // Login member
+                    val pair = MemberController.loginWithCredentials(email, password)
+                    call.respond(pair.first, pair.second.toBrotly())
+                } catch (e: Exception) {
+                    e.message?.let { call.respond(HttpStatusCode.InternalServerError, it) }
+                }
+            }
+        }
+
+        route("/token") {
+            post {
+                try {
+                    val formParameters = call.receiveParameters()
+                    // Get received token
+                    val token = formParameters["token"] ?: throw IllegalArgumentException("Token is missing")
+
+                    // Login member
+                    val pair = MemberController.loginWithToken(token.toBrotly())
                     call.respond(pair.first, pair.second)
                 } catch (e: Exception) {
                     e.message?.let { call.respond(HttpStatusCode.InternalServerError, it) }
