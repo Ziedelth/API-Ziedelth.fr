@@ -32,6 +32,9 @@ data class Member(
     @Column(name = "last_login", nullable = true)
     var lastLogin: Calendar? = null,
 
+    @Column(name = "last_login_token", nullable = true)
+    var lastLoginToken: Calendar? = null,
+
     @Column(name = "token", nullable = true, unique = true)
     var token: String? = null,
 
@@ -59,6 +62,6 @@ data class Member(
 
     @Override
     override fun toString(): String {
-        return this::class.simpleName + "(id = $id , timestamp = $timestamp , pseudo = $pseudo , email = $email , emailVerified = $emailVerified , password = $password , lastLogin = $lastLogin , token = $token )"
+        return this::class.simpleName + "(id = $id , timestamp = $timestamp , pseudo = $pseudo , email = $email , emailVerified = $emailVerified , password = $password , lastLogin = $lastLogin , lastLoginToken = $lastLoginToken , token = $token , role = $role )"
     }
 }
