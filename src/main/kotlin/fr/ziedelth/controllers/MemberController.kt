@@ -147,6 +147,7 @@ object MemberController {
         emailVerified = null,
         password = null,
         lastLogin = null,
+        lastLoginToken = null,
         token = if (token) this.token else null
     )
 
@@ -168,7 +169,9 @@ object MemberController {
             "Wrong password"
         )
 
-        member.lastLogin = Calendar.getInstance()
+        val instance = Calendar.getInstance()
+        member.lastLogin = instance
+        member.lastLoginToken = instance
         member.token = UUID.randomUUID().toString()
 
         // Save the member
@@ -190,6 +193,15 @@ object MemberController {
             HttpStatusCode.Unauthorized,
             "Member last login is more than 1 month ago"
         )
+
+        member.lastLoginToken = Calendar.getInstance()
+
+        // Save the member
+        val session = Session.sessionFactory.openSession()
+        val transaction = session.beginTransaction()
+        session.update(member)
+        transaction.commit()
+        session.close()
 
         return Pair(HttpStatusCode.OK, member.withoutSensitiveInformation(true))
     }

@@ -4,9 +4,7 @@ import com.google.gson.Gson
 import fr.ziedelth.controllers.AnimeController
 import fr.ziedelth.controllers.MemberController
 import fr.ziedelth.models.Anime
-import fr.ziedelth.utils.Encode
 import fr.ziedelth.utils.toBrotly
-import fr.ziedelth.utils.toJSONString
 import io.ktor.http.*
 import io.ktor.server.application.*
 import io.ktor.server.request.*
