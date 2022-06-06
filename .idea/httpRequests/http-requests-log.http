@@ -1,0 +1,13 @@
+POST https://api.ziedelth.fr/v1/animes/merge
+Content-Type: application/json
+
+{
+  "token": "ac187bcb-b51a-4f56-8a7a-e8a68955b062",
+  "fromId": 803,
+  "toId": 52
+}
+
+<> 2022-06-06T195917.500.txt
+
+###
+
