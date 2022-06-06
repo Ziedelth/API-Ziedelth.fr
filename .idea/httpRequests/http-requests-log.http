@@ -1,4 +1,17 @@
 POST https://api.ziedelth.fr/v1/animes/merge
+Authorization: ac187bcb-b51a-4f56-8a7a-e8a68955b062
+Content-Type: application/json
+
+{
+  "fromId": 803,
+  "toId": 52
+}
+
+<> 2022-06-06T200355.500.txt
+
+###
+
+POST https://api.ziedelth.fr/v1/animes/merge
 Content-Type: application/json
 
 {

@@ -1,6 +1,7 @@
 package fr.ziedelth.routes
 
 import com.google.gson.Gson
+import com.google.gson.JsonObject
 import fr.ziedelth.controllers.AnimeController
 import fr.ziedelth.controllers.MemberController
 import fr.ziedelth.models.Anime
@@ -90,18 +91,9 @@ fun Route.animeRoute() {
                     )
                 }
 
-                val formParameters = call.receiveParameters()
-
-                val fromId = formParameters["fromId"]?.toLongOrNull() ?: return@post call.respond(
-                    HttpStatusCode.BadRequest,
-                    "FromId must be an integer"
-                )
-
-                val toId = formParameters["toId"]?.toLongOrNull() ?: return@post call.respond(
-                    HttpStatusCode.BadRequest,
-                    "ToId must be an integer"
-                )
-
+                val formParameters = Gson().fromJson(call.receiveText(), JsonObject::class.java)
+                val fromId = formParameters.get("fromId").asLong
+                val toId = formParameters.get("toId").asLong
                 AnimeController.mergeAnime(fromId, toId)
                 call.respond(HttpStatusCode.OK, "Merged")
             } catch (e: Exception) {
