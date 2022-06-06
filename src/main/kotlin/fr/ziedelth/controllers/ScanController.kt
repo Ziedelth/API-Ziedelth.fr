@@ -13,6 +13,7 @@ object ScanController {
     }
 
     fun getScansByAnime(animeUrl: String) = ScanAnimeCache.get(animeUrl)
+    fun getScansByAnimeWithoutCache(animeId: Long) = ScanAnimeCache.g(animeId)
 
     // Update scan
     fun updateScan(scan: Scan) {

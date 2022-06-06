@@ -8,7 +8,7 @@ object ScanAnimeCache {
     private var animesCache: Cache<List<Anime>?>? = null
     private val cache = mutableMapOf<String, Cache<List<Scan>?>>()
 
-    private fun g(animeId: Long): List<Scan>? {
+    fun g(animeId: Long): List<Scan>? {
         val session = Session.sessionFactory.openSession()
         val list = session?.createQuery(
             "FROM Scan WHERE anime.id = :animeId ORDER BY releaseDate DESC, anime.name, number DESC, episodeType.id, langType.id, id DESC",

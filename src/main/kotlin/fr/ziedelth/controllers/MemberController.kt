@@ -80,6 +80,13 @@ object MemberController {
         return sb.toString()
     }
 
+    fun getMembers(): List<Member>? {
+        val session = Session.sessionFactory.openSession()
+        val members = session?.createQuery("FROM Member", Member::class.java)?.list()
+        session?.close()
+        return members
+    }
+
     private fun getMemberByEmail(email: String): Member? {
         val session = Session.sessionFactory.openSession()
         val member = session?.createQuery(

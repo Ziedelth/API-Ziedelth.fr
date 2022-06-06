@@ -42,30 +42,36 @@ object AnimeController {
 
         val fromCodes = from.codes
         val toCodes = to.codes
-
         // Add fromCodes to toCodes if not already present
         toCodes?.addAll(fromCodes?.filter { !toCodes.contains(it) } ?: listOf())
+        to.codes = toCodes
 
         val fromGenres = from.genres
         val toGenres = to.genres
-
         // Add fromGenres to toGenres if not already present
         toGenres?.addAll(fromGenres?.filter { !toGenres.contains(it) } ?: listOf())
+        to.genres = toGenres
 
-        // Change from anime id to anime id in episodes
-        from.url?.let {
-            EpisodeController.getEpisodesByAnime(it)?.forEach { episode ->
+        from.id?.let {
+            EpisodeController.getEpisodesByAnimeWithoutCache(it)?.forEach { episode ->
                 episode.anime = to
                 session.update(episode)
             }
-        }
 
-        // Change from anime id to anime id in scans
-        from.url?.let {
-            ScanController.getScansByAnime(it)?.forEach { scan ->
+            ScanController.getScansByAnimeWithoutCache(it)?.forEach { scan ->
                 scan.anime = to
                 session.update(scan)
             }
+        }
+
+        MemberController.getMembers()?.filter { it.watchlist?.any { anime -> anime.id == from.id } == true }?.forEach { member ->
+            member.watchlist?.remove(from)
+
+            if (member.watchlist?.any { anime -> anime.id == to.id } != true) {
+                member.watchlist?.add(to)
+            }
+
+            session.update(member)
         }
 
         session.update(to)
