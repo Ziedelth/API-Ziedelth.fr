@@ -23,7 +23,6 @@ object PlatformController {
         session.beginTransaction()
         session.delete(platform)
         session.transaction?.commit()
-        session.flush()
         session.close()
     }
 }

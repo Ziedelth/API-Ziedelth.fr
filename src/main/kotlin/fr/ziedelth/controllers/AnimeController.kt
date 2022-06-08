@@ -109,7 +109,6 @@ object AnimeController {
         }
 
         session.transaction?.commit()
-        session.flush()
         session.close()
     }
 }
