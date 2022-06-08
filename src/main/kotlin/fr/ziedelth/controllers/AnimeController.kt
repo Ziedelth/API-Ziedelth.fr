@@ -7,6 +7,7 @@ import fr.ziedelth.utils.Session
 import kotlin.math.min
 
 object AnimeController {
+    fun getAllWithoutCache() = AnimeCache.gAll()
 
     fun searchAnime(country: String, search: String): List<Anime>? {
         val cache = AnimeCache.get(country)
