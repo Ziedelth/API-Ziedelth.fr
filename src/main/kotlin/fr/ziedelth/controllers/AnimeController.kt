@@ -93,4 +93,23 @@ object AnimeController {
         session.flush()
         session.close()
     }
+
+    fun clean() {
+        val session = Session.sessionFactory.openSession()
+        session.beginTransaction()
+
+        getAllWithoutCache()?.filter { anime ->
+            val id = anime.id ?: return@filter false
+            val episodes = EpisodeController.getEpisodesByAnimeWithoutCache(id)
+            val scans = ScanController.getScansByAnimeWithoutCache(id)
+            println("${anime.name} : ${episodes?.size} episode(s) - ${scans?.size} scan(s)")
+            return@filter episodes.isNullOrEmpty() && scans.isNullOrEmpty()
+        }?.forEach { anime ->
+            session.delete(anime)
+        }
+
+        session.transaction?.commit()
+        session.flush()
+        session.close()
+    }
 }

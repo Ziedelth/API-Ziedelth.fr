@@ -21,20 +21,9 @@ object PlatformController {
         }
 
         session.beginTransaction()
-
         session.delete(platform)
-
-        AnimeController.getAllWithoutCache()?.filter { anime ->
-            val url = anime.url
-            if (url.isNullOrBlank()) return@filter false
-            val episodes = EpisodeController.getEpisodesByAnime(url)
-            val scans = ScanController.getScansByAnime(url)
-            return@filter episodes.isNullOrEmpty() && scans.isNullOrEmpty()
-        }?.forEach { anime ->
-            session.delete(anime)
-        }
-
         session.transaction?.commit()
+        session.flush()
         session.close()
     }
 }

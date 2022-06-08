@@ -1,5 +1,6 @@
 package fr.ziedelth
 
+import fr.ziedelth.commands.AnimeCleanCommand
 import fr.ziedelth.commands.DeletePlatformCommand
 import fr.ziedelth.commands.ShowPlatformsCommand
 import fr.ziedelth.routes.*
@@ -23,7 +24,7 @@ fun main() {
 
     Thread {
         println("Init scanner...")
-        val commands = arrayOf(ShowPlatformsCommand(), DeletePlatformCommand())
+        val commands = arrayOf(ShowPlatformsCommand(), DeletePlatformCommand(), AnimeCleanCommand())
         val scanner = Scanner(System.`in`)
 
         while (true) {
