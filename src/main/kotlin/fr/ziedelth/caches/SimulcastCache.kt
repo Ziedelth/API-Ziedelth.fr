@@ -15,18 +15,11 @@ object SimulcastCache {
                 String::class.java
             )
                 ?.list()?.toSet()
-        val sl =
-            session?.createQuery(
-                "SELECT DISTINCT releaseDate FROM Scan ORDER BY releaseDate ASC",
-                String::class.java
-            )
-                ?.list()?.toSet()
         session?.close()
 
         // Create a list with all elements of _el and _sl
         val list = mutableListOf<String>()
         el?.let { list.addAll(it) }
-        sl?.let { list.addAll(it) }
 
         return list.distinct().mapNotNull { Simulcast.getSimulcast(ISO8601.fromUTCDate(it)) }.toSet()
             .mapIndexed { index, simulcast -> mapOf("id" to index + 1, "simulcast" to simulcast) }
