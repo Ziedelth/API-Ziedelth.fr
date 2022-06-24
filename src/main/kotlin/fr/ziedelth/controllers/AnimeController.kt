@@ -34,7 +34,9 @@ object AnimeController {
         return anime
     }
 
-    private fun mergeAnime(from: Anime, to: Anime) {
+    private fun mergeAnime(from: Anime?, to: Anime?) {
+        if (from == null || to == null) return
+
         val session = Session.sessionFactory.openSession()
         val transaction = session.beginTransaction()
 
@@ -79,7 +81,7 @@ object AnimeController {
     }
 
     fun mergeAnime(from: Long, to: Long) =
-        mergeAnime(getAnimeById(from)!!, getAnimeById(to)!!)
+        mergeAnime(getAnimeById(from), getAnimeById(to))
 
     // Update anime
     fun updateAnime(anime: Anime) {
