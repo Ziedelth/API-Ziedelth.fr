@@ -59,7 +59,6 @@ fun main() {
             langTypeRoute()
             animeRoute()
             episodeRoute()
-            scanRoute()
             simulcastRoute()
             memberRoute()
             watchlistRoute()

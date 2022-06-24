@@ -7,7 +7,7 @@ import fr.ziedelth.utils.Session
 import kotlin.math.min
 
 object AnimeController {
-    fun getAllWithoutCache() = AnimeCache.gAll()
+    private fun getAllWithoutCache() = AnimeCache.gAll()
 
     fun searchAnime(country: String, search: String): List<Anime>? {
         val cache = AnimeCache.get(country)
@@ -58,22 +58,18 @@ object AnimeController {
                 episode.anime = to
                 session.update(episode)
             }
-
-            ScanController.getScansByAnimeWithoutCache(it)?.forEach { scan ->
-                scan.anime = to
-                session.update(scan)
-            }
         }
 
-        MemberController.getMembers()?.filter { it.watchlist?.any { anime -> anime.id == from.id } == true }?.forEach { member ->
-            member.watchlist?.remove(from)
+        MemberController.getMembers()?.filter { it.watchlist?.any { anime -> anime.id == from.id } == true }
+            ?.forEach { member ->
+                member.watchlist?.remove(from)
 
-            if (member.watchlist?.any { anime -> anime.id == to.id } != true) {
-                member.watchlist?.add(to)
+                if (member.watchlist?.any { anime -> anime.id == to.id } != true) {
+                    member.watchlist?.add(to)
+                }
+
+                session.update(member)
             }
-
-            session.update(member)
-        }
 
         session.update(to)
         session.remove(from)
@@ -101,9 +97,8 @@ object AnimeController {
         getAllWithoutCache()?.filter { anime ->
             val id = anime.id ?: return@filter false
             val episodes = EpisodeController.getEpisodesByAnimeWithoutCache(id)
-            val scans = ScanController.getScansByAnimeWithoutCache(id)
-            println("${anime.name} : ${episodes?.size} episode(s) - ${scans?.size} scan(s)")
-            return@filter episodes.isNullOrEmpty() && scans.isNullOrEmpty()
+            println("${anime.name} : ${episodes?.size} episode(s)")
+            return@filter episodes.isNullOrEmpty()
         }?.forEach { anime ->
             session.delete(anime)
         }

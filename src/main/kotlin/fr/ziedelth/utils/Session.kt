@@ -27,7 +27,6 @@ object Session {
                 addAnnotatedClass(EpisodeType::class.java)
                 addAnnotatedClass(LangType::class.java)
                 addAnnotatedClass(Episode::class.java)
-                addAnnotatedClass(Scan::class.java)
                 addAnnotatedClass(Member::class.java)
 
                 configure(jFile.file)
