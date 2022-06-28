@@ -3,7 +3,6 @@ package fr.ziedelth.caches
 import fr.ziedelth.controllers.SimulcastController
 import fr.ziedelth.models.Anime
 import fr.ziedelth.models.Episode
-import fr.ziedelth.models.Scan
 import fr.ziedelth.utils.ISO8601
 import fr.ziedelth.utils.Session
 import fr.ziedelth.utils.Simulcast
@@ -22,9 +21,6 @@ object AnimeSimulcastCache {
         val el =
             session?.createQuery("FROM Episode WHERE anime.country.tag = :tag ORDER BY anime.name", Episode::class.java)
                 ?.setParameter("tag", country)?.list()
-        val sl =
-            session?.createQuery("FROM Scan WHERE anime.country.tag = :tag ORDER BY anime.name", Scan::class.java)
-                ?.setParameter("tag", country)?.list()
         session?.close()
 
         val simulcasts = SimulcastController.getSimulcasts() ?: return null
@@ -33,11 +29,8 @@ object AnimeSimulcastCache {
         val ael =
             el?.filter { Simulcast.getSimulcast(ISO8601.fromUTCDate(it.releaseDate)) == getSimulcast["simulcast"] }
                 ?.mapNotNull { it.anime }?.toSet()?.toList() ?: arrayListOf()
-        val asl =
-            sl?.filter { Simulcast.getSimulcast(ISO8601.fromUTCDate(it.releaseDate)) == getSimulcast["simulcast"] }
-                ?.mapNotNull { it.anime }?.toSet()?.toList() ?: arrayListOf()
 
-        val animes = ael.union(asl).distinctBy { it.id }
+        val animes = ael.distinctBy { it.id }
         AnimeCache.setUrl(animes)
         return animes.sortedBy { it.name?.lowercase() }
     }

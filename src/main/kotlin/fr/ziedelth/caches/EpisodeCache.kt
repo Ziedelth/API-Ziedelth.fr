@@ -23,7 +23,7 @@ object EpisodeCache {
         if (has) {
             val cache = this.cache[country]!!
 
-            if (cache.hasExpired()) return cache.value
+            if (!cache.hasExpired()) return cache.value
 
             cache.lastCheck = System.currentTimeMillis()
             cache.value = g(country)

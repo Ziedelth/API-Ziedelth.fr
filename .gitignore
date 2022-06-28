@@ -38,3 +38,5 @@ out/
 /.jpb/
 /src/main/kotlin/fr/ziedelth/utils/Const.kt
 /src/main/kotlin/fr/ziedelth/Test.kt
+/.idea/
+/.idea/httpRequests/

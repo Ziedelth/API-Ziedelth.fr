@@ -13,6 +13,7 @@ object EpisodeController {
     }
 
     fun getEpisodesByAnime(animeUrl: String) = EpisodeAnimeCache.get(animeUrl)
+    fun getEpisodesByAnimeWithoutCache(animeId: Long) = EpisodeAnimeCache.g(animeId)
 
     // Update episode
     fun updateEpisode(episode: Episode) {

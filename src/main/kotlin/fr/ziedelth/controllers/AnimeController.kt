@@ -7,6 +7,7 @@ import fr.ziedelth.utils.Session
 import kotlin.math.min
 
 object AnimeController {
+    fun getAllWithoutCache() = AnimeCache.gAll()
 
     fun searchAnime(country: String, search: String): List<Anime>? {
         val cache = AnimeCache.get(country)
@@ -33,7 +34,9 @@ object AnimeController {
         return anime
     }
 
-    private fun mergeAnime(from: Anime, to: Anime) {
+    private fun mergeAnime(from: Anime?, to: Anime?) {
+        if (from == null || to == null) return
+
         val session = Session.sessionFactory.openSession()
         val transaction = session.beginTransaction()
 
@@ -42,31 +45,33 @@ object AnimeController {
 
         val fromCodes = from.codes
         val toCodes = to.codes
-
         // Add fromCodes to toCodes if not already present
         toCodes?.addAll(fromCodes?.filter { !toCodes.contains(it) } ?: listOf())
+        to.codes = toCodes
 
         val fromGenres = from.genres
         val toGenres = to.genres
-
         // Add fromGenres to toGenres if not already present
         toGenres?.addAll(fromGenres?.filter { !toGenres.contains(it) } ?: listOf())
+        to.genres = toGenres
 
-        // Change from anime id to anime id in episodes
-        from.url?.let {
-            EpisodeController.getEpisodesByAnime(it)?.forEach { episode ->
+        from.id?.let {
+            EpisodeController.getEpisodesByAnimeWithoutCache(it)?.forEach { episode ->
                 episode.anime = to
                 session.update(episode)
             }
         }
 
-        // Change from anime id to anime id in scans
-        from.url?.let {
-            ScanController.getScansByAnime(it)?.forEach { scan ->
-                scan.anime = to
-                session.update(scan)
+        MemberController.getMembers()?.filter { it.watchlist?.any { anime -> anime.id == from.id } == true }
+            ?.forEach { member ->
+                member.watchlist?.remove(from)
+
+                if (member.watchlist?.any { anime -> anime.id == to.id } != true) {
+                    member.watchlist?.add(to)
+                }
+
+                session.update(member)
             }
-        }
 
         session.update(to)
         session.remove(from)
@@ -76,7 +81,7 @@ object AnimeController {
     }
 
     fun mergeAnime(from: Long, to: Long) =
-        mergeAnime(getAnimeById(from)!!, getAnimeById(to)!!)
+        mergeAnime(getAnimeById(from), getAnimeById(to))
 
     // Update anime
     fun updateAnime(anime: Anime) {
@@ -84,6 +89,23 @@ object AnimeController {
         session.beginTransaction()
         session.update(anime)
         session.flush()
+        session.close()
+    }
+
+    fun clean() {
+        val session = Session.sessionFactory.openSession()
+        session.beginTransaction()
+
+        getAllWithoutCache()?.filter { anime ->
+            val id = anime.id ?: return@filter false
+            val episodes = EpisodeController.getEpisodesByAnimeWithoutCache(id)
+            println("${anime.name} : ${episodes?.size} episode(s)")
+            return@filter episodes.isNullOrEmpty()
+        }?.forEach { anime ->
+            session.delete(anime)
+        }
+
+        session.transaction?.commit()
         session.close()
     }
 }
