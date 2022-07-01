@@ -7,8 +7,8 @@ object Simulcast {
         if (calendar == null) return null
         val seasons = arrayOf("Hiver", "Printemps", "Eté", "Automne")
         val year = calendar.get(Calendar.YEAR)
-        val month = calendar.get(Calendar.MONTH) + 1
-        val index = month / 4
+        val month = calendar.get(Calendar.MONTH)
+        val index = month / 3
         val season = seasons[index]
         return "$season $year"
     }
