@@ -9,7 +9,7 @@ class JFile(val name: String, default: String = JsonObject().toString()) {
     val file = File(this.currentFolder, this.name)
 
     init {
-        if (!this.file.exists()) {
+        if (this.name.contains(".") && !this.file.exists()) {
             this.file.createNewFile()
             // Write default value
             this.write(default)
