@@ -61,28 +61,42 @@ fun Route.episodeRoute() {
 
         put("/update") {
             try {
-                val token = call.request.headers["Authorization"] ?: return@put call.respond(
-                    HttpStatusCode.BadRequest,
-                    "Token not found"
-                )
+                val token = call.request.headers["Authorization"] ?: return@put kotlin.run {
+                    println("Token not found")
 
-                val member = MemberController.getMemberByToken(token) ?: return@put call.respond(
-                    HttpStatusCode.BadRequest,
-                    "Member not found"
-                )
+                    call.respond(
+                        HttpStatusCode.BadRequest,
+                        "Token not found"
+                    )
+                }
+
+                val member = MemberController.getMemberByToken(token) ?: return@put kotlin.run {
+                    println("Member not found")
+
+                    call.respond(
+                        HttpStatusCode.BadRequest,
+                        "Member not found"
+                    )
+                }
 
                 if (member.role != 100) {
-                    return@put call.respond(
-                        HttpStatusCode.Forbidden,
-                        "You don't have the permission to do that"
-                    )
+                    return@put kotlin.run {
+                        println("Member not authorized")
+
+                        call.respond(
+                            HttpStatusCode.Unauthorized,
+                            "Member not authorized"
+                        )
+                    }
                 }
 
                 val text = call.receiveText()
                 val episode = Gson().fromJson(text, Episode::class.java)
                 EpisodeController.updateEpisode(episode)
+                println("Episode updated")
                 call.respond(HttpStatusCode.OK, "Updated")
             } catch (e: Exception) {
+                println("Error while updating episode")
                 e.message?.let { call.respond(HttpStatusCode.InternalServerError, it) }
             }
         }
