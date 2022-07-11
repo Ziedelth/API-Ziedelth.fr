@@ -12,7 +12,10 @@ object EpisodeController {
         return cache?.subList(min(cache.size, (page - 1) * limit), min(cache.size, page * limit))
     }
 
-    fun getEpisodesByAnime(animeUrl: String) = EpisodeAnimeCache.get(animeUrl)
+    fun getEpisodesByAnime(animeUrl: String, page: Int = 1, limit: Int = 9): List<Episode>? {
+        val cache = EpisodeAnimeCache.get(animeUrl)
+        return cache?.subList(min(cache.size, (page - 1) * limit), min(cache.size, page * limit))
+    }
     fun getEpisodesByAnimeWithoutCache(animeId: Long) = EpisodeAnimeCache.g(animeId)
 
     // Update episode

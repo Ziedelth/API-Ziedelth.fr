@@ -57,23 +57,6 @@ data class Member(
         )
     )
     var watchlist: MutableList<Anime>? = null,
-
-    @OneToMany
-    @LazyCollection(LazyCollectionOption.FALSE)
-    @JoinTable(
-        name = "seen",
-        joinColumns = [JoinColumn(name = "member_id", referencedColumnName = "id")],
-        inverseJoinColumns = [JoinColumn(name = "episode_id", referencedColumnName = "id", table = "episodes")],
-        foreignKey = ForeignKey(
-            name = "fk_seen_member_id",
-            foreignKeyDefinition = "FOREIGN KEY (member_id) REFERENCES members(id) ON DELETE CASCADE"
-        ),
-        inverseForeignKey = ForeignKey(
-            name = "fk_seen_episode_id",
-            foreignKeyDefinition = "FOREIGN KEY (episode_id) REFERENCES episodes(id) ON DELETE CASCADE"
-        )
-    )
-    var seen: MutableList<Episode>? = null,
 ) : Serializable {
     override fun equals(other: Any?): Boolean {
         if (this === other) return true

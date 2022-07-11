@@ -3,6 +3,7 @@ package fr.ziedelth.routes
 import com.google.gson.Gson
 import com.google.gson.JsonObject
 import fr.ziedelth.controllers.AnimeController
+import fr.ziedelth.controllers.EpisodeController
 import fr.ziedelth.controllers.MemberController
 import fr.ziedelth.models.Anime
 import fr.ziedelth.utils.toBrotly
@@ -186,6 +187,34 @@ fun Route.animeRoute() {
                 )
 
                 call.respond(animes.toBrotly())
+            } catch (e: Exception) {
+                e.message?.let { call.respond(HttpStatusCode.InternalServerError, it) }
+            }
+        }
+
+        get("{url}/page/{page}/limit/{limit}") {
+            try {
+                val url = call.parameters["url"] ?: return@get call.respond(
+                    HttpStatusCode.BadRequest,
+                    "Url not found"
+                )
+
+                val page = call.parameters["page"]?.toIntOrNull() ?: return@get call.respond(
+                    HttpStatusCode.BadRequest,
+                    "Page must be an integer"
+                )
+
+                val limit = call.parameters["limit"]?.toIntOrNull() ?: return@get call.respond(
+                    HttpStatusCode.BadRequest,
+                    "Limit must be an integer"
+                )
+
+                val episodes = EpisodeController.getEpisodesByAnime(url, page, limit) ?: return@get call.respond(
+                    HttpStatusCode.NoContent,
+                    "Episodes not found"
+                )
+
+                call.respond(episodes.toBrotly())
             } catch (e: Exception) {
                 e.message?.let { call.respond(HttpStatusCode.InternalServerError, it) }
             }
