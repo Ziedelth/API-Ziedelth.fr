@@ -138,7 +138,7 @@ fun Route.episodeRoute() {
                     "Url not found"
                 )
 
-                val episodes = EpisodeController.getEpisodesByAnime(url) ?: return@get call.respond(
+                val episodes = EpisodeController.getEpisodesByAnime(url, limit = 100) ?: return@get call.respond(
                     HttpStatusCode.NoContent,
                     "Episodes not found"
                 )

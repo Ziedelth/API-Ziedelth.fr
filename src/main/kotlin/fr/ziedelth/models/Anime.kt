@@ -15,7 +15,14 @@ data class Anime(
 
     @ElementCollection
     @LazyCollection(LazyCollectionOption.FALSE)
-    @CollectionTable(name = "anime_codes", joinColumns = [JoinColumn(name = "anime_id")])
+    @CollectionTable(
+        name = "anime_codes",
+        joinColumns = [JoinColumn(name = "anime_id")],
+        foreignKey = ForeignKey(
+            name = "fk_anime_codes_anime_id",
+            foreignKeyDefinition = "FOREIGN KEY (anime_id) REFERENCES animes(id) ON DELETE CASCADE"
+        )
+    )
     @Column(name = "code", nullable = false)
     var codes: MutableList<String>? = null,
 
@@ -24,12 +31,27 @@ data class Anime(
     @JoinTable(
         name = "anime_genres",
         joinColumns = [JoinColumn(name = "anime_id", referencedColumnName = "id")],
-        inverseJoinColumns = [JoinColumn(name = "genre_id", referencedColumnName = "id")]
+        inverseJoinColumns = [JoinColumn(name = "genre_id", referencedColumnName = "id")],
+        foreignKey = ForeignKey(
+            name = "fk_anime_genres_anime_id",
+            foreignKeyDefinition = "FOREIGN KEY (anime_id) REFERENCES animes(id) ON DELETE CASCADE"
+        ),
+        inverseForeignKey = ForeignKey(
+            name = "fk_anime_genres_genre_id",
+            foreignKeyDefinition = "FOREIGN KEY (genre_id) REFERENCES genres(id) ON DELETE CASCADE"
+        )
     )
     var genres: MutableList<Genre>? = null,
 
     @ManyToOne(fetch = FetchType.EAGER)
-    @JoinColumn(name = "country_id", nullable = false)
+    @JoinColumn(
+        name = "country_id",
+        nullable = false,
+        foreignKey = ForeignKey(
+            name = "fk_anime_country_id",
+            foreignKeyDefinition = "FOREIGN KEY (country_id) REFERENCES countries(id) ON DELETE CASCADE"
+        )
+    )
     val country: Country? = null,
 
     @Column(name = "release_date", nullable = false)
