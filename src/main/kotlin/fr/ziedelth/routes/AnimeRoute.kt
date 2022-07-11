@@ -192,7 +192,7 @@ fun Route.animeRoute() {
             }
         }
 
-        get("{url}/page/{page}/limit/{limit}") {
+        get("/{url}/episodes/page/{page}/limit/{limit}") {
             try {
                 val url = call.parameters["url"] ?: return@get call.respond(
                     HttpStatusCode.BadRequest,
