@@ -54,11 +54,23 @@ class AnimeCommand : ICommand("anime") {
                         println("Get all images from episodes folder...")
                         val episodeImagesFiles = File(folder, "episodes").listFiles() ?: emptyArray()
                         println("Calculate deprecated images...")
-                        val episodesImagesDeprecated = episodeImagesFiles.filter { image -> episodes?.any { episode -> if (episode.image.isNullOrBlank()) false else image.path.replace("\\", "/").contains(episode.image) } != true }
+                        val episodesImagesDeprecated = episodeImagesFiles.filter { image ->
+                            episodes?.any { episode ->
+                                if (episode.image.isNullOrBlank()) false else image.path.replace(
+                                    "\\",
+                                    "/"
+                                ).contains(episode.image)
+                            } != true
+                        }
                         val totalEpisodeDeprecatedSize = episodesImagesDeprecated.sumOf { it.length() }
 
                         println("Animes: ${animeImagesDeprecated.size}/${animeImagesFiles.size} (~${totalAnimeDeprecatedSize / (1024 * 1024)} MiB)")
-                        println("Episodes: ${episodesImagesDeprecated.size}/${episodeImagesFiles.size} (~${totalEpisodeDeprecatedSize / (1024)} KiB)")
+                        println("Episodes: ${episodesImagesDeprecated.size}/${episodeImagesFiles.size} (~${totalEpisodeDeprecatedSize / (1024 * 1024)} MiB)")
+
+                        println("Delete deprecated images...")
+                        animeImagesDeprecated.forEach { it.delete() }
+                        episodesImagesDeprecated.forEach { it.delete() }
+                        println("Deleted!")
                     }
                 }
             }
