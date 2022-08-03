@@ -3,6 +3,7 @@ package fr.ziedelth.routes
 import fr.ziedelth.controllers.MemberController
 import fr.ziedelth.controllers.MemberController.withoutSensitiveInformation
 import fr.ziedelth.utils.toBrotly
+import fr.ziedelth.utils.toJSONString
 import io.ktor.http.*
 import io.ktor.server.application.*
 import io.ktor.server.request.*
@@ -17,7 +18,7 @@ fun Route.memberRoute() {
                     val pseudo = call.parameters["pseudo"] ?: throw IllegalArgumentException("Pseudo is missing")
                     val member =
                         MemberController.getMemberByPseudo(pseudo) ?: return@get call.respond(HttpStatusCode.NotFound)
-                    call.respond(member.withoutSensitiveInformation())
+                    call.respond(member.withoutSensitiveInformation().toJSONString())
                 } catch (e: Exception) {
                     e.message?.let { call.respond(HttpStatusCode.InternalServerError, it) }
                 }
@@ -60,7 +61,7 @@ fun Route.memberRoute() {
 
                     // Login member
                     val pair = MemberController.loginWithCredentials(email, password)
-                    call.respond(pair.first, pair.second)
+                    call.respond(pair.first, pair.second.toJSONString())
                 } catch (e: Exception) {
                     e.message?.let { call.respond(HttpStatusCode.InternalServerError, it) }
                 }
@@ -76,7 +77,7 @@ fun Route.memberRoute() {
 
                     // Login member
                     val pair = MemberController.loginWithToken(token)
-                    call.respond(pair.first, pair.second)
+                    call.respond(pair.first, pair.second.toJSONString())
                 } catch (e: Exception) {
                     e.message?.let { call.respond(HttpStatusCode.InternalServerError, it) }
                 }

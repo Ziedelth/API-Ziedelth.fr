@@ -2,6 +2,7 @@ package fr.ziedelth.routes
 
 import fr.ziedelth.controllers.CountryController
 import fr.ziedelth.utils.toBrotly
+import fr.ziedelth.utils.toJSONString
 import io.ktor.http.*
 import io.ktor.server.application.*
 import io.ktor.server.response.*
@@ -15,7 +16,7 @@ fun Route.countryRoute() {
                     HttpStatusCode.NoContent,
                     "Countries not found"
                 )
-                call.respond(countries)
+                call.respond(countries.toJSONString())
             } catch (e: Exception) {
                 e.message?.let { call.respond(HttpStatusCode.InternalServerError, it) }
             }

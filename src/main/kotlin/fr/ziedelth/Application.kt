@@ -6,7 +6,6 @@ import fr.ziedelth.commands.ShowPlatformsCommand
 import fr.ziedelth.routes.*
 import fr.ziedelth.utils.Session
 import io.ktor.http.*
-import io.ktor.serialization.gson.*
 import io.ktor.server.application.*
 import io.ktor.server.engine.*
 import io.ktor.server.netty.*
@@ -47,7 +46,6 @@ fun main() {
 
         install(ContentNegotiation) {
             println("Init contentNegotiation...")
-            gson {}
         }
 
         routing {

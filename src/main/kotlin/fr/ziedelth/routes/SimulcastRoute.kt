@@ -2,6 +2,7 @@ package fr.ziedelth.routes
 
 import fr.ziedelth.controllers.SimulcastController
 import fr.ziedelth.utils.toBrotly
+import fr.ziedelth.utils.toJSONString
 import io.ktor.http.*
 import io.ktor.server.application.*
 import io.ktor.server.response.*
@@ -15,7 +16,7 @@ fun Route.simulcastRoute() {
                 "Simulcasts not found"
             )
 
-            call.respond(simulcasts)
+            call.respond(simulcasts.toJSONString())
         }
     }
 
