@@ -17,6 +17,7 @@
         <kotlin.compiler.incremental>true</kotlin.compiler.incremental>
         <main.class>fr.ziedelth.ApplicationKt</main.class>
         <jar.name>ziedelth.fr-api</jar.name>
+        <kotlin.compiler.source>11</kotlin.compiler.source>
     </properties>
 
     <repositories>
@@ -26,9 +27,6 @@
             <releases>
                 <enabled>true</enabled>
             </releases>
-            <snapshots>
-                <enabled>true</enabled>
-            </snapshots>
         </repository>
     </repositories>
 
@@ -75,18 +73,6 @@
             <version>${logback_version}</version>
         </dependency>
         <dependency>
-            <groupId>io.ktor</groupId>
-            <artifactId>ktor-server-tests-jvm</artifactId>
-            <version>${ktor_version}</version>
-            <scope>test</scope>
-        </dependency>
-        <dependency>
-            <groupId>org.jetbrains.kotlin</groupId>
-            <artifactId>kotlin-test-junit</artifactId>
-            <version>${kotlin_version}</version>
-            <scope>test</scope>
-        </dependency>
-        <dependency>
             <groupId>org.hibernate</groupId>
             <artifactId>hibernate-core</artifactId>
             <version>6.1.0.Final</version>
@@ -129,7 +115,7 @@
                 <groupId>org.jetbrains.kotlin</groupId>
                 <version>${kotlin_version}</version>
                 <configuration>
-                    <jvmTarget>1.8</jvmTarget>
+                    <jvmTarget>${kotlin.compiler.source}</jvmTarget>
                 </configuration>
                 <executions>
                     <execution>
@@ -192,8 +178,8 @@
                 <groupId>org.apache.maven.plugins</groupId>
                 <artifactId>maven-compiler-plugin</artifactId>
                 <configuration>
-                    <source>10</source>
-                    <target>10</target>
+                    <source>${kotlin.compiler.source}</source>
+                    <target>${kotlin.compiler.source}</target>
                 </configuration>
             </plugin>
         </plugins>
