@@ -9,14 +9,15 @@
     <description>api-ktor</description>
 
     <properties>
-        <ktor_version>2.0.1</ktor_version>
+        <ktor_version>2.0.3</ktor_version>
         <kotlin.code.style>official</kotlin.code.style>
-        <kotlin_version>1.7.0</kotlin_version>
+        <kotlin_version>1.7.10</kotlin_version>
         <logback_version>1.2.11</logback_version>
         <project.build.sourceEncoding>UTF-8</project.build.sourceEncoding>
         <kotlin.compiler.incremental>true</kotlin.compiler.incremental>
         <main.class>fr.ziedelth.ApplicationKt</main.class>
         <jar.name>ziedelth.fr-api</jar.name>
+        <kotlin.compiler.source>11</kotlin.compiler.source>
     </properties>
 
     <repositories>
@@ -26,9 +27,6 @@
             <releases>
                 <enabled>true</enabled>
             </releases>
-            <snapshots>
-                <enabled>true</enabled>
-            </snapshots>
         </repository>
     </repositories>
 
@@ -41,16 +39,6 @@
         <dependency>
             <groupId>io.ktor</groupId>
             <artifactId>ktor-server-host-common-jvm</artifactId>
-            <version>${ktor_version}</version>
-        </dependency>
-        <dependency>
-            <groupId>io.ktor</groupId>
-            <artifactId>ktor-server-content-negotiation-jvm</artifactId>
-            <version>${ktor_version}</version>
-        </dependency>
-        <dependency>
-            <groupId>io.ktor</groupId>
-            <artifactId>ktor-serialization-gson-jvm</artifactId>
             <version>${ktor_version}</version>
         </dependency>
         <dependency>
@@ -75,18 +63,6 @@
             <version>${logback_version}</version>
         </dependency>
         <dependency>
-            <groupId>io.ktor</groupId>
-            <artifactId>ktor-server-tests-jvm</artifactId>
-            <version>${ktor_version}</version>
-            <scope>test</scope>
-        </dependency>
-        <dependency>
-            <groupId>org.jetbrains.kotlin</groupId>
-            <artifactId>kotlin-test-junit</artifactId>
-            <version>${kotlin_version}</version>
-            <scope>test</scope>
-        </dependency>
-        <dependency>
             <groupId>org.hibernate</groupId>
             <artifactId>hibernate-core</artifactId>
             <version>6.1.0.Final</version>
@@ -94,7 +70,7 @@
         <dependency>
             <groupId>org.mariadb.jdbc</groupId>
             <artifactId>mariadb-java-client</artifactId>
-            <version>3.0.5</version>
+            <version>3.0.6</version>
         </dependency>
         <dependency>
             <groupId>com.sun.mail</groupId>
@@ -104,7 +80,7 @@
         <dependency>
             <groupId>com.google.code.gson</groupId>
             <artifactId>gson</artifactId>
-            <version>2.9.0</version>
+            <version>2.9.1</version>
         </dependency>
         <dependency>
             <groupId>com.aayushatharva.brotli4j</groupId>
@@ -129,7 +105,7 @@
                 <groupId>org.jetbrains.kotlin</groupId>
                 <version>${kotlin_version}</version>
                 <configuration>
-                    <jvmTarget>1.8</jvmTarget>
+                    <jvmTarget>${kotlin.compiler.source}</jvmTarget>
                 </configuration>
                 <executions>
                     <execution>
@@ -166,7 +142,7 @@
             <plugin>
                 <groupId>org.apache.maven.plugins</groupId>
                 <artifactId>maven-assembly-plugin</artifactId>
-                <version>2.6</version>
+                <version>3.4.2</version>
                 <configuration>
                     <descriptorRefs>
                         <descriptorRef>jar-with-dependencies</descriptorRef>
@@ -192,8 +168,8 @@
                 <groupId>org.apache.maven.plugins</groupId>
                 <artifactId>maven-compiler-plugin</artifactId>
                 <configuration>
-                    <source>10</source>
-                    <target>10</target>
+                    <source>${kotlin.compiler.source}</source>
+                    <target>${kotlin.compiler.source}</target>
                 </configuration>
             </plugin>
         </plugins>

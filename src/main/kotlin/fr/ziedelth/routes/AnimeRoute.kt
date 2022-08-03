@@ -7,6 +7,7 @@ import fr.ziedelth.controllers.EpisodeController
 import fr.ziedelth.controllers.MemberController
 import fr.ziedelth.models.Anime
 import fr.ziedelth.utils.toBrotly
+import fr.ziedelth.utils.toJSONString
 import io.ktor.http.*
 import io.ktor.server.application.*
 import io.ktor.server.request.*
@@ -43,7 +44,7 @@ fun Route.animeRoute() {
                         "Animes not found"
                     )
 
-                call.respond(animes)
+                call.respond(animes.toJSONString())
             } catch (e: Exception) {
                 e.message?.let { call.respond(HttpStatusCode.InternalServerError, it) }
                 e.printStackTrace()
@@ -67,7 +68,7 @@ fun Route.animeRoute() {
                     "Animes not found"
                 )
 
-                call.respond(animes)
+                call.respond(animes.toJSONString())
             } catch (e: Exception) {
                 e.message?.let { call.respond(HttpStatusCode.InternalServerError, it) }
             }

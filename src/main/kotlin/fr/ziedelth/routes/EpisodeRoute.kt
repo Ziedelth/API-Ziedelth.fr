@@ -5,6 +5,7 @@ import fr.ziedelth.controllers.EpisodeController
 import fr.ziedelth.controllers.MemberController
 import fr.ziedelth.models.Episode
 import fr.ziedelth.utils.toBrotly
+import fr.ziedelth.utils.toJSONString
 import io.ktor.http.*
 import io.ktor.server.application.*
 import io.ktor.server.request.*
@@ -35,7 +36,7 @@ fun Route.episodeRoute() {
                     "Episodes not found"
                 )
 
-                call.respond(episodes)
+                call.respond(episodes.toJSONString())
             } catch (e: Exception) {
                 e.message?.let { call.respond(HttpStatusCode.InternalServerError, it) }
             }
@@ -53,7 +54,7 @@ fun Route.episodeRoute() {
                     "Episodes not found"
                 )
 
-                call.respond(episodes)
+                call.respond(episodes.toJSONString())
             } catch (e: Exception) {
                 e.message?.let { call.respond(HttpStatusCode.InternalServerError, it) }
             }

@@ -2,6 +2,7 @@ package fr.ziedelth.routes
 
 import fr.ziedelth.controllers.EpisodeTypeController
 import fr.ziedelth.utils.toBrotly
+import fr.ziedelth.utils.toJSONString
 import io.ktor.http.*
 import io.ktor.server.application.*
 import io.ktor.server.response.*
@@ -15,7 +16,7 @@ fun Route.episodeTypeRoute() {
                     HttpStatusCode.NoContent,
                     "Episode types not found"
                 )
-                call.respond(episodeTypes)
+                call.respond(episodeTypes.toJSONString())
             } catch (e: Exception) {
                 e.message?.let { call.respond(HttpStatusCode.InternalServerError, it) }
             }

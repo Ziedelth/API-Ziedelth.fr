@@ -2,6 +2,7 @@ package fr.ziedelth.routes
 
 import fr.ziedelth.controllers.WatchlistController
 import fr.ziedelth.utils.toBrotly
+import fr.ziedelth.utils.toJSONString
 import io.ktor.http.*
 import io.ktor.server.application.*
 import io.ktor.server.request.*
@@ -34,7 +35,7 @@ fun Route.watchlistRoute() {
                             "Episodes not found"
                         )
 
-                    call.respond(watchlist)
+                    call.respond(watchlist.toJSONString())
                 } catch (e: Exception) {
                     e.message?.let { call.respond(HttpStatusCode.InternalServerError, it) }
                 }
