@@ -155,7 +155,7 @@ object MemberController {
         password = null,
         lastLogin = null,
         lastLoginToken = null,
-        token = if (token) this.token else null
+        token = if (token) this.token else null,
     )
 
     fun loginWithCredentials(email: String, password: String): Pair<HttpStatusCode, Any> {

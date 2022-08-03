@@ -9,18 +9,22 @@ import java.util.zip.GZIPOutputStream
 object Encode {
     private fun base64(bytes: ByteArray): String = Base64.getEncoder().encodeToString(bytes)
 
-    fun gzip(string: String): String {
-        val bos = ByteArrayOutputStream(string.length)
+    fun gzip(bytes: ByteArray): ByteArray {
+        val bos = ByteArrayOutputStream(bytes.size)
         val gzip = GZIPOutputStream(bos)
-        gzip.write(string.toByteArray())
+        gzip.write(bytes)
         gzip.close()
         val compressed = bos.toByteArray()
         bos.close()
-        return base64(compressed)
+        return compressed
     }
 
-    fun brotli(string: String): String {
+    fun gzip(string: String) = base64(gzip(string.toByteArray()))
+
+    fun brotli(bytes: ByteArray): ByteArray {
         Brotli4jLoader.ensureAvailability()
-        return base64(Encoder.compress(string.toByteArray()))
+        return Encoder.compress(bytes)
     }
+
+    fun brotli(string: String) = base64(brotli(string.toByteArray()))
 }

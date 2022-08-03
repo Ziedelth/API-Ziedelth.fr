@@ -40,3 +40,4 @@ out/
 /src/main/kotlin/fr/ziedelth/Test.kt
 /.idea/
 /.idea/httpRequests/
+/backup.sh
