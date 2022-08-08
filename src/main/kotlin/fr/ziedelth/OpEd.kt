@@ -32,7 +32,11 @@ fun main() {
     val page = context.newPage()
     val animes = AnimeController.getAllWithoutCache()
     val cache = mutableListOf<AnimeOpEd>()
-    cache.addAll(Gson().fromJson(File("musics.json").readText(), Array<AnimeOpEd>::class.java).toList())
+
+    val file = File("musics.json")
+
+    if (file.exists())
+        cache.addAll(Gson().fromJson(file.readText(), Array<AnimeOpEd>::class.java).toList())
 
     animes?.filter { anime -> !cache.any { it.anime == anime.name } }?.forEach { anime ->
         val musics = searchAnime(page, anime.name!!)?.mapNotNull { searchOpEd(page, it) }?.flatten() ?: return@forEach
@@ -46,7 +50,7 @@ fun main() {
         val dataMinifyToGZIPLength = dataMinifyToGZIP.toByteArray().size.toDouble() / 1024
         val dataMinifyToBrotliLength = dataMinifyToBrotli.toByteArray().size.toDouble() / 1024
         println("${anime.name} - ${String.format("%.2f", dataMinifyLength)} KiB - ${String.format("%.2f", dataMinifyToGZIPLength)} KiB - ${String.format("%.2f", dataMinifyToBrotliLength)} KiB")
-        File("musics.json").writeText(dataMinify)
+        file.writeText(dataMinify)
         File("musics.gzip").writeText(dataMinifyToGZIP)
         File("musics.br").writeText(dataMinifyToBrotli)
     }
@@ -75,11 +79,12 @@ fun searchAnime(page: Page, anime: String): List<String>? {
     if (b(page)) return searchAnime(page, anime)
     // Get element with id "titlelist"
     val titleList = page.waitForSelector("#titlelist")?.querySelectorAll(".homesongs")?.map { it.textContent() to it.querySelector("a")?.getAttribute("href") }?.mapIndexed { index, pair -> index to pair }
+    if (titleList.isNullOrEmpty()) return searchAnime(page, anime)
 
     println("-".repeat(50))
     println("Anime: $anime")
 
-    titleList?.forEach { (index, pair) ->
+    titleList.forEach { (index, pair) ->
         val (name, _) = pair
         println("$index - ${name.replace("\n", "")}")
     }
@@ -100,7 +105,7 @@ fun searchAnime(page: Page, anime: String): List<String>? {
     }
 
     val split = input.split(",").map { it.trim().toInt() }
-    return titleList?.filter { split.contains(it.first) }?.mapNotNull { it.second.second }
+    return titleList.filter { split.contains(it.first) }.mapNotNull { it.second.second }
 }
 
 fun searchOpEd(page: Page, url: String): List<OpEd>? {
@@ -136,9 +141,19 @@ fun getYoutubeUrl(page: Page, url: Pair<String, String>): OpEd? {
     val title = text.split("Lyrics").firstOrNull()?.trim() ?: return null
     var artist = text.split(" Lyricsby ").lastOrNull()?.trim()
     if (artist?.contains(title, true) == true) artist = null
-    var youtubeUrl = searchMusic(title, artist) ?: return null
+    var youtubeUrl: String? = null
 
-    if (artist == null) {
+    for (i in 0..10) {
+        try {
+            youtubeUrl = searchMusic(title, artist) ?: return null
+            if (youtubeUrl.isNotBlank()) break
+        } catch (_: Exception) {
+        }
+    }
+
+    println("Title: $title")
+
+    if (youtubeUrl == null || artist == null) {
         println("Artist not found, url it's correct? $youtubeUrl (y/n)")
         // Check if user write Y/n
         val input = readLine()?.trim() ?: return null
@@ -147,9 +162,9 @@ fun getYoutubeUrl(page: Page, url: Pair<String, String>): OpEd? {
             println("Please enter the correct url :")
             youtubeUrl = readLine()?.trim() ?: return null
         }
-    }
+    } else println("Artist: $artist")
 
-    return OpEd(type, youtubeUrl, title, artist)
+    return OpEd(type, youtubeUrl!!, title, artist)
 }
 
 fun searchMusic(title: String, artist: String? = null): String? {
