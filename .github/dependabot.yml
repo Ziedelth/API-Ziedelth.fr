@@ -1,6 +1,6 @@
 version: 2
 updates:
-  - package-ecosystem: "npm"
+  - package-ecosystem: "maven"
     directory: "/"
     schedule:
       interval: "daily"
@@ -10,3 +10,4 @@ updates:
     directory: "/"
     schedule:
       interval: "weekly"
+    target-branch: "dev"
