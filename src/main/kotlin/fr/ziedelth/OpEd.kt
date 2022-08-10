@@ -38,8 +38,11 @@ fun main() {
     if (file.exists())
         cache.addAll(Gson().fromJson(file.readText(), Array<AnimeOpEd>::class.java).toList())
 
-    animes?.filter { anime -> !cache.any { it.anime == anime.name } }?.forEach { anime ->
-        val musics = searchAnime(page, anime.name!!)?.mapNotNull { searchOpEd(page, it) }?.flatten() ?: return@forEach
+    val check = animes?.filter { anime -> !cache.any { it.anime == anime.name } }
+    println("${check?.size} animes to check")
+
+    check?.forEachIndexed { index, anime ->
+        val musics = searchAnime(page, anime.name!!)?.mapNotNull { searchOpEd(page, it) }?.flatten() ?: return@forEachIndexed
         cache.add(AnimeOpEd(anime.name, musics))
 
         val dataMinify = Gson().toJson(cache)
@@ -53,6 +56,8 @@ fun main() {
         file.writeText(dataMinify)
         File("musics.gzip").writeText(dataMinifyToGZIP)
         File("musics.br").writeText(dataMinifyToBrotli)
+
+        println("${index + 1}/${check.size}")
     }
 
     browser.close()
@@ -78,8 +83,8 @@ fun searchAnime(page: Page, anime: String): List<String>? {
 
     if (b(page)) return searchAnime(page, anime)
     // Get element with id "titlelist"
-    val titleList = page.waitForSelector("#titlelist")?.querySelectorAll(".homesongs")?.map { it.textContent() to it.querySelector("a")?.getAttribute("href") }?.mapIndexed { index, pair -> index to pair }
-    if (titleList.isNullOrEmpty()) return searchAnime(page, anime)
+    val titleList = page.querySelector("#titlelist")?.querySelectorAll(".homesongs")?.map { it.textContent() to it.querySelector("a")?.getAttribute("href") }?.mapIndexed { index, pair -> index to pair }
+    if (titleList.isNullOrEmpty()) return null
 
     println("-".repeat(50))
     println("Anime: $anime")
