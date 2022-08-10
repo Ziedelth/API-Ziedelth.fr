@@ -5,6 +5,8 @@ import fr.ziedelth.controllers.AnimeController
 import fr.ziedelth.utils.ICommand
 import fr.ziedelth.utils.JFile
 import java.io.File
+import java.util.*
+import javax.imageio.ImageIO
 
 class AnimeCommand : ICommand("anime") {
     override fun run(args: List<String>) {
@@ -71,6 +73,50 @@ class AnimeCommand : ICommand("anime") {
                         animeImagesDeprecated.forEach { it.delete() }
                         episodesImagesDeprecated.forEach { it.delete() }
                         println("Deleted!")
+                    }
+
+                    "optimize" -> {
+                        val folder = JFile("images").file
+                        val animeFolder = File(folder, "animes")
+                        val episodeFolder = File(folder, "episodes")
+
+                        val totalAnimeOriginalSize = animeFolder.listFiles()?.sumOf { it.length() }
+                        val totalEpisodeOriginalSize = episodeFolder.listFiles()?.sumOf { it.length() }
+
+                        println("Original animes size: ~${totalAnimeOriginalSize?.div((1024 * 1024))} MiB")
+                        println("Original episodes size: ~${totalEpisodeOriginalSize?.div((1024 * 1024))} MiB")
+
+                        val tmpFolder = JFile("tmp").file
+                        if (!tmpFolder.exists()) tmpFolder.mkdirs()
+                        val animeTmpFolder = File(tmpFolder, "animes")
+                        if (!animeTmpFolder.exists()) animeTmpFolder.mkdirs()
+                        val episodeTmpFolder = File(tmpFolder, "episodes")
+                        if (!episodeTmpFolder.exists()) episodeTmpFolder.mkdirs()
+
+                        println("Optimize animes...")
+                        animeFolder.listFiles()?.forEach {
+                            ImageIO.write(
+                                ImageIO.read(it),
+                                "webp",
+                                File(animeTmpFolder, "${UUID.randomUUID()}.webp")
+                            )
+                        }
+                        println("Optimize episodes...")
+                        episodeFolder.listFiles()?.forEach {
+                            ImageIO.write(
+                                ImageIO.read(it),
+                                "webp",
+                                File(episodeTmpFolder, "${UUID.randomUUID()}.webp")
+                            )
+                        }
+
+                        val totalAnimeOptimizedSize = animeTmpFolder.listFiles()?.sumOf { it.length() }
+                        val totalEpisodeOptimizedSize = episodeTmpFolder.listFiles()?.sumOf { it.length() }
+
+                        println("Optimized animes size: ~${totalAnimeOptimizedSize?.div((1024 * 1024))} MiB")
+                        println("Optimized episodes size: ~${totalEpisodeOptimizedSize?.div((1024 * 1024))} MiB")
+
+                        tmpFolder.deleteRecursively()
                     }
                 }
             }
