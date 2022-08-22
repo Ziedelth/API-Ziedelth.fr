@@ -98,5 +98,39 @@ fun Route.memberRoute() {
                 }
             }
         }
+
+        route("/login") {
+            post {
+                try {
+                    val formParameters = call.receiveParameters()
+                    // Get received email
+                    val email = formParameters["email"] ?: throw IllegalArgumentException("Email is missing")
+                    // Get received password
+                    val password = formParameters["password"] ?: throw IllegalArgumentException("Password is missing")
+
+                    // Login member
+                    val pair = MemberController.loginWithCredentials(email, password)
+                    call.respond(pair.first, pair.second.toBrotly())
+                } catch (e: Exception) {
+                    e.message?.let { call.respond(HttpStatusCode.InternalServerError, it) }
+                }
+            }
+        }
+
+        route("/token") {
+            post {
+                try {
+                    val formParameters = call.receiveParameters()
+                    // Get received token
+                    val token = formParameters["token"] ?: throw IllegalArgumentException("Token is missing")
+
+                    // Login member
+                    val pair = MemberController.loginWithToken(token)
+                    call.respond(pair.first, pair.second.toBrotly())
+                } catch (e: Exception) {
+                    e.message?.let { call.respond(HttpStatusCode.InternalServerError, it) }
+                }
+            }
+        }
     }
 }
