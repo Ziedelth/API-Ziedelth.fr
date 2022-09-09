@@ -2,6 +2,7 @@ package fr.ziedelth.models
 
 import jakarta.persistence.*
 import org.hibernate.Hibernate
+import org.hibernate.annotations.Formula
 import org.hibernate.annotations.LazyCollection
 import org.hibernate.annotations.LazyCollectionOption
 import java.io.Serializable
@@ -26,7 +27,7 @@ data class Anime(
     @Column(name = "code", nullable = false)
     var codes: MutableList<String>? = null,
 
-    @OneToMany()
+    @OneToMany
     @LazyCollection(LazyCollectionOption.FALSE)
     @JoinTable(
         name = "anime_genres",
@@ -68,6 +69,9 @@ data class Anime(
 
     @Column(nullable = true)
     var description: String? = null,
+
+    @Formula("(SELECT COUNT(w.member_id) FROM watchlist w WHERE w.anime_id = id)")
+    val inWatchlist: Long? = null
 ) : Serializable {
     override fun equals(other: Any?): Boolean {
         if (this === other) return true

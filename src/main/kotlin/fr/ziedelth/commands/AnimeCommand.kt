@@ -16,12 +16,14 @@ import kotlin.system.measureTimeMillis
 class AnimeCommand : ICommand("anime") {
     override fun run(args: List<String>) {
         if (args.isEmpty()) {
-            println("""Usage:
+            println(
+                """Usage:
                 • anime show
                 • anime clean
                 • anime optimize
                 • anime merge <from> <to>
-            """.trimIndent())
+            """.trimIndent()
+            )
             return
         }
 
@@ -31,12 +33,15 @@ class AnimeCommand : ICommand("anime") {
                     println("• (${it.id}) ${it.name}")
                 }
             }
+
             "clean" -> {
                 if (args.size == 1) {
-                    println("""Usage :
+                    println(
+                        """Usage :
                         • anime clean sql
                         • anime clean images
-                    """.trimIndent())
+                    """.trimIndent()
+                    )
                     return
                 }
 
@@ -46,6 +51,7 @@ class AnimeCommand : ICommand("anime") {
                         AnimeController.clean()
                         println("Cleaned!")
                     }
+
                     "images" -> {
                         val folder = JFile("images").file
 
@@ -54,7 +60,14 @@ class AnimeCommand : ICommand("anime") {
                         println("Get all images from animes folder...")
                         val animeImagesFiles = File(folder, "animes").listFiles() ?: emptyArray()
                         println("Calculate deprecated images...")
-                        val animeImagesDeprecated = animeImagesFiles.filter { image -> animes?.any { anime -> if (anime.image.isNullOrBlank()) false else image.path.replace("\\", "/").contains(anime.image!!) } != true }
+                        val animeImagesDeprecated = animeImagesFiles.filter { image ->
+                            animes?.any { anime ->
+                                if (anime.image.isNullOrBlank()) false else image.path.replace(
+                                    "\\",
+                                    "/"
+                                ).contains(anime.image!!)
+                            } != true
+                        }
                         val totalAnimeDeprecatedSize = animeImagesDeprecated.sumOf { it.length() }
 
                         println("Get all episodes...")
@@ -195,6 +208,7 @@ class AnimeCommand : ICommand("anime") {
 
                 tmpFolder.deleteRecursively()
             }
+
             "merge" -> {
                 if (args.size != 3) {
                     println("Usage: anime merge <from> <to>")
