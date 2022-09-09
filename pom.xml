@@ -9,10 +9,10 @@
     <description>api-ktor</description>
 
     <properties>
-        <ktor_version>2.1.0</ktor_version>
+        <ktor_version>2.1.1</ktor_version>
         <kotlin.code.style>official</kotlin.code.style>
         <kotlin_version>1.7.10</kotlin_version>
-        <logback_version>1.2.11</logback_version>
+        <logback_version>1.4.0</logback_version>
         <project.build.sourceEncoding>UTF-8</project.build.sourceEncoding>
         <kotlin.compiler.incremental>true</kotlin.compiler.incremental>
         <main.class>fr.ziedelth.ApplicationKt</main.class>

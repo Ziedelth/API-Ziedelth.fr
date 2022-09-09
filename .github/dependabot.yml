@@ -4,10 +4,18 @@ updates:
     directory: "/"
     schedule:
       interval: "daily"
+    assignees:
+      - "Ziedelth"
+    reviewers:
+      - "Ziedelth"
     target-branch: "dev"
 
   - package-ecosystem: "github-actions"
     directory: "/"
     schedule:
       interval: "weekly"
+    assignees:
+      - "Ziedelth"
+    reviewers:
+      - "Ziedelth"
     target-branch: "dev"
