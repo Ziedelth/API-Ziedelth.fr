@@ -33,13 +33,23 @@ enum class GenreEnum(val fr: String, val identifiers: Array<String> = arrayOf())
     MUSIC("Musique", identifiers = arrayOf("Musique", "Musical", "music")),
     NOSTALGIA("Nostalgie", identifiers = arrayOf("Nostalgie")),
     POLICE("Police", identifiers = arrayOf("Police", "Policier")),
-    POST_APOCALYPTIC("Post Apocalyptique", identifiers = arrayOf("Post Apo", "Post Apocalyptique", "Post-apocalyptique")),
+    POST_APOCALYPTIC(
+        "Post Apocalyptique",
+        identifiers = arrayOf("Post Apo", "Post Apocalyptique", "Post-apocalyptique")
+    ),
     PIRATES("Pirates", identifiers = arrayOf("Pirates", "Pirate")),
     PSYCHOLOGY("Psychologie", identifiers = arrayOf("Psychologie")),
     ROMANCE("Romance", identifiers = arrayOf("Romance", "Romantique")),
     SCHOOL(
         "École",
-        identifiers = arrayOf("École", "School", "Scolaire", "Vie Scolaire", "Animation japonaise sur l'école", "School Life")
+        identifiers = arrayOf(
+            "École",
+            "School",
+            "Scolaire",
+            "Vie Scolaire",
+            "Animation japonaise sur l'école",
+            "School Life"
+        )
     ),
     SCI_FI("Science-fiction", identifiers = arrayOf("Science-fiction", "Science-fi", "science fiction", "sci-fi")),
     SEINEN("Seinen", identifiers = arrayOf("Seinen")),

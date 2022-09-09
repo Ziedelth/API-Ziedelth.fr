@@ -1,20 +1,13 @@
 package fr.ziedelth
 
 import com.google.gson.Gson
-import com.google.gson.JsonObject
-import com.microsoft.playwright.Page
-import com.microsoft.playwright.Playwright
 import fr.ziedelth.controllers.AnimeController
 import fr.ziedelth.controllers.GenreController
-import fr.ziedelth.models.Genre
 import fr.ziedelth.utils.GenreEnum
 import fr.ziedelth.utils.Session
 import fr.ziedelth.utils.toBrotly
 import fr.ziedelth.utils.toGZIP
-import java.io.BufferedReader
 import java.io.File
-import java.io.InputStreamReader
-import java.net.URL
 import java.net.URLEncoder
 import java.nio.charset.Charset
 
@@ -50,7 +43,7 @@ fun main() {
         }
 
         println(stringBuilder)
-        val ge = stringBuilder.split(" - ").map {  g -> GenreEnum.getGenre(g.trim()).name }.toMutableList()
+        val ge = stringBuilder.split(" - ").map { g -> GenreEnum.getGenre(g.trim()).name }.toMutableList()
         ge.removeIf { it == "UNKNOWN" }
         println("Genres: ${ge.joinToString(", ")}")
         cache.add(AnimeGenre(anime.name, ge))
@@ -62,7 +55,14 @@ fun main() {
         val dataMinifyLength = dataMinify.toByteArray().size.toDouble() / 1024
         val dataMinifyToGZIPLength = dataMinifyToGZIP.toByteArray().size.toDouble() / 1024
         val dataMinifyToBrotliLength = dataMinifyToBrotli.toByteArray().size.toDouble() / 1024
-        println("${anime.name} - ${String.format("%.2f", dataMinifyLength)} KiB - ${String.format("%.2f", dataMinifyToGZIPLength)} KiB - ${String.format("%.2f", dataMinifyToBrotliLength)} KiB")
+        println(
+            "${anime.name} - ${String.format("%.2f", dataMinifyLength)} KiB - ${
+                String.format(
+                    "%.2f",
+                    dataMinifyToGZIPLength
+                )
+            } KiB - ${String.format("%.2f", dataMinifyToBrotliLength)} KiB"
+        )
         file.writeText(dataMinify)
         File("genres.gzip").writeText(dataMinifyToGZIP)
         File("genres.br").writeText(dataMinifyToBrotli)
